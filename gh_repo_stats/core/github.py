@@ -1,7 +1,6 @@
 import json
 import os.path
 import subprocess
-import tempfile
 from typing import List, Dict
 
 import click
@@ -48,9 +47,10 @@ def clone_repo(repo_name: str, working_dir: str):
     #       f"=============================")
 
     if result.returncode != 0:
-        return  None
+        return None
 
     return os.path.join(working_dir, repo_name)
+
 
 def calc_lines_local_repo(repo_dir: str) -> Dict:
     cmdline = ['cloc', '.', '--json']
