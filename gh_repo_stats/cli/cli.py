@@ -10,11 +10,7 @@ from gh_repo_stats.core.graph import plot_graph
 
 
 @click.command()
-@click.option('-t', '--token',
-              # prompt=True,
-              # hide_input=True,
-              metavar='<token>',
-              default=None,
+@click.option('-t', '--token', metavar='<token>', default=None,
               help="GitHub token (here is the link to GitHub documentation page http://shorturl.at/psGQS, or "
                    "just google 'GitHub Creating a personal access token'); you need only to grant access to"
                    "Repository permissions: Read access to code, commit statuses, and metadata")
@@ -22,7 +18,9 @@ from gh_repo_stats.core.graph import plot_graph
               show_default=True, help='Output image filename where the graph will be written')
 @click.option('--cache', 'use_cache', is_flag=True, default=False, show_default=True,
               help='Use cached data to plot graphics')
-def cli(token: str, output_base_name: str, use_cache: bool):
+@click.option('-mp', '--min-percent', type=float, default=1.0,
+              help='Lower boundary (in %) that language must have to be shown')
+def cli(token: str, output_base_name: str, use_cache: bool, min_percent: float):
     stats = None
 
     if use_cache:
@@ -43,16 +41,16 @@ def cli(token: str, output_base_name: str, use_cache: bool):
     if stats is None:
         sys.exit(2)
 
-    _plot_graph(stats, 'bytes', output_base_name)
-    _plot_graph(stats, 'lines', output_base_name)
+    _plot_graph(stats, 'bytes', min_percent, output_base_name)
+    _plot_graph(stats, 'lines', min_percent, output_base_name)
 
     sys.exit(0)
 
 
-def _plot_graph(stats: Dict, param_name: str, output_base_name: str):
+def _plot_graph(stats: Dict, param_name: str, min_percent: float, output_base_name: str):
     lang_stats_bytes = {k: v[param_name] if param_name in v else 0 for k, v in stats.items()}
     sorted_lang_stats = sorted(lang_stats_bytes.items(), key=lambda x: x[1], reverse=True)
-    plot_graph(sorted_lang_stats, f'{output_base_name}_{param_name}.png')
+    plot_graph(sorted_lang_stats, min_percent, f'{output_base_name}_{param_name}.png')
 
     total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
     pprint.pprint(sorted_lang_stats)

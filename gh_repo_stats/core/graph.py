@@ -3,10 +3,13 @@ from typing import List, Tuple
 import plotly.graph_objects as go
 
 
-def plot_graph(lang_stats: List[Tuple[str, int]], output_filename: str):
+def plot_graph(lang_stats: List[Tuple[str, int]], min_percent: float, output_filename: str):
     sorted_lang_stats = sorted(lang_stats, key=lambda x: x[1])
     total_code_bytes = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
-    print(total_code_bytes)
+    # print(total_code_bytes)
+
+    min_abs_value = total_code_bytes * min_percent / 100.0
+    sorted_lang_stats = list(filter(lambda x: x if x[1] >= min_abs_value else None, sorted_lang_stats))
 
     fig = go.Figure(go.Bar(
         x=[code_bytes * 100.0 / total_code_bytes for lang, code_bytes in sorted_lang_stats],
