@@ -1,3 +1,4 @@
+import datetime
 import pprint
 import sys
 from typing import Dict
@@ -53,7 +54,8 @@ def _plot_graph(stats: Dict, data_type: DataType, min_percent: float, output_bas
 
     lang_stats_bytes = {k: v[param_name] if param_name in v else 0 for k, v in stats.items()}
     sorted_lang_stats = sorted(lang_stats_bytes.items(), key=lambda x: x[1], reverse=True)
-    plot_graph(sorted_lang_stats, data_type, min_percent, f'{output_base_name}_{param_name}.png')
+    plot_graph(sorted_lang_stats, data_type, min_percent,
+               f"{output_base_name}_{param_name}_{datetime.datetime.now().strftime('%Y-%m-%d')}.png")
 
     total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
     pprint.pprint(sorted_lang_stats)
