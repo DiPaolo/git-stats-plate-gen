@@ -5,6 +5,7 @@ from typing import Dict
 import click
 
 from gh_repo_stats.core import cache
+from gh_repo_stats.core.common import DataType, get_data_type_name
 from gh_repo_stats.core.data import collect_data
 from gh_repo_stats.core.graph import plot_graph
 
@@ -41,16 +42,18 @@ def cli(token: str, output_base_name: str, use_cache: bool, min_percent: float):
     if stats is None:
         sys.exit(2)
 
-    _plot_graph(stats, 'bytes', min_percent, output_base_name)
-    _plot_graph(stats, 'lines', min_percent, output_base_name)
+    _plot_graph(stats, DataType.BYTES, min_percent, output_base_name)
+    _plot_graph(stats, DataType.LINES, min_percent, output_base_name)
 
     sys.exit(0)
 
 
-def _plot_graph(stats: Dict, param_name: str, min_percent: float, output_base_name: str):
+def _plot_graph(stats: Dict, data_type: DataType, min_percent: float, output_base_name: str):
+    param_name = get_data_type_name(data_type)
+
     lang_stats_bytes = {k: v[param_name] if param_name in v else 0 for k, v in stats.items()}
     sorted_lang_stats = sorted(lang_stats_bytes.items(), key=lambda x: x[1], reverse=True)
-    plot_graph(sorted_lang_stats, min_percent, f'{output_base_name}_{param_name}.png')
+    plot_graph(sorted_lang_stats, data_type, min_percent, f'{output_base_name}_{param_name}.png')
 
     total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
     pprint.pprint(sorted_lang_stats)
