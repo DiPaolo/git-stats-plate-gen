@@ -36,7 +36,8 @@ def plot_graph(lang_stats: List[Tuple[str, int]], data_type: DataType, min_perce
             orientation='h',
             texttemplate='%{x}',
         ),
-        layout_title_text=f'Most used languages ({map_data_type_to_text(data_type)})'
+        layout_title_text=f'Most used languages ({map_data_type_to_text(data_type)})',
+        layout_title_font_size=36
     )
 
     y_s = [round(code_bytes * 100.0 / total_code_bytes, 1) for lang, code_bytes in sorted_lang_stats]
