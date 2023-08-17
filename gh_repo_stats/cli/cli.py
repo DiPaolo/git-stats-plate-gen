@@ -27,7 +27,7 @@ from gh_repo_stats.core.graph import plot_graph
 @click.option('-mp', '--min-percent', type=float, default=1.0,
               help='Lower boundary (in %) that language must have to be shown')
 def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
-    if user is None:
+    if not cache and user is None:
         click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument")
         sys.exit(ExitCode.INVALID_CMDLINE_USER.value)
 
