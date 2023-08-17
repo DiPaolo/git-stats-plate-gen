@@ -5,6 +5,8 @@ from typing import Dict
 
 import click
 
+from gh_repo_stats import config
+from gh_repo_stats.cli.exit_codes import ExitCode
 from gh_repo_stats.core import cache
 from gh_repo_stats.core.common import DataType, get_data_type_name
 from gh_repo_stats.core.data import collect_data
@@ -12,6 +14,8 @@ from gh_repo_stats.core.graph import plot_graph
 
 
 @click.command()
+@click.option('-u', '--user', metavar='<name>', default=None,
+              help='GitHub username')
 @click.option('-t', '--token', metavar='<token>', default=None,
               help="GitHub token (here is the link to GitHub documentation page http://shorturl.at/psGQS, or "
                    "just google 'GitHub Creating a personal access token'); you need only to grant access to"
@@ -22,7 +26,11 @@ from gh_repo_stats.core.graph import plot_graph
               help='Use cached data to plot graphics')
 @click.option('-mp', '--min-percent', type=float, default=1.0,
               help='Lower boundary (in %) that language must have to be shown')
-def cli(token: str, output_base_name: str, use_cache: bool, min_percent: float):
+def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
+    if user is None:
+        click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument")
+        sys.exit(ExitCode.INVALID_CMDLINE_USER.value)
+
     stats = None
 
     if use_cache:
@@ -32,21 +40,22 @@ def cli(token: str, output_base_name: str, use_cache: bool, min_percent: float):
         if token is None:
             token = click.prompt('Token', hide_input=True, default=None)
             if token is None:
-                click.echo('ERROR: Token is not specified. Please specify it using command line argument or via '
-                           'command line prompt')
-                sys.exit(1)
+                click.echo(
+                    "ERROR: token is not specified. Please specify it using '-t'/'--token' command line argument "
+                    "or during being asked for in command line prompt")
+                sys.exit(ExitCode.INVALID_CMDLINE_TOKEN.value)
 
-        stats = collect_data(token)
+        stats = collect_data(user, token)
         if stats is not None:
             cache.dump_stats(stats)
 
     if stats is None:
-        sys.exit(2)
+        sys.exit(ExitCode.FAILED_COLLECT_STATS.value)
 
     _plot_graph(stats, DataType.BYTES, min_percent, output_base_name)
     _plot_graph(stats, DataType.LINES, min_percent, output_base_name)
 
-    sys.exit(0)
+    sys.exit(ExitCode.OK.value)
 
 
 def _plot_graph(stats: Dict, data_type: DataType, min_percent: float, output_base_name: str):
@@ -58,8 +67,10 @@ def _plot_graph(stats: Dict, data_type: DataType, min_percent: float, output_bas
                f"{output_base_name}_{param_name}_{datetime.datetime.now().strftime('%Y-%m-%d')}.png")
 
     total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
-    pprint.pprint(sorted_lang_stats)
 
-    print(f'Total {param_name}: {total_code}')
+    if config.DEBUG:
+        pprint.pprint(sorted_lang_stats)
+
+    click.echo(f'Total {param_name}: {total_code}')
     for lang, code in sorted_lang_stats:
-        print(f'  {lang} - {code} ({code * 100.0 / total_code :4.2f}%)')
+        click.echo(f'  {lang} - {code} ({code * 100.0 / total_code :4.2f}%)')

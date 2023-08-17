@@ -86,13 +86,13 @@ def get_repos(token: str) -> List[object]:
     return data
 
 
-def get_repo_langs(token: str, repo_name: str) -> List[Dict]:
+def get_repo_langs(user_name: str, token: str, repo_name: str) -> List[Dict]:
     headers = {
         'Accept': 'application/vnd.github+json',
         'Authorization': f'Bearer {token}',
         'X-GitHub-Api-Version': '2022-11-28'
     }
-    ret = requests.get(f'https://api.github.com/repos/dipaolo/{repo_name}/languages', headers=headers)
+    ret = requests.get(f'https://api.github.com/repos/{user_name}/{repo_name}/languages', headers=headers)
     if not ret.ok:
         click.echo(f"Failed to get languages for repo {repo_name} from GitHub: {ret.reason}", err=True)
         return list()

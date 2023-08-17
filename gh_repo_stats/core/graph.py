@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+import click
 import plotly.graph_objects as go
 
 from gh_repo_stats.core.common import DataType, get_data_type_name
@@ -17,7 +18,6 @@ def map_data_type_to_text(data_type: DataType) -> str:
 def plot_graph(lang_stats: List[Tuple[str, int]], data_type: DataType, min_percent: float, output_filename: str):
     sorted_lang_stats = sorted(lang_stats, key=lambda x: x[1])
     total_code_bytes = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
-    # print(total_code_bytes)
 
     min_abs_value = total_code_bytes * min_percent / 100.0
     sorted_lang_stats = list(filter(lambda x: x if x[1] >= min_abs_value else None, sorted_lang_stats))
@@ -64,5 +64,5 @@ def plot_graph(lang_stats: List[Tuple[str, int]], data_type: DataType, min_perce
     fig.update_layout(annotations=annotations)
 
     fig.write_image(output_filename, width=1280, height=720)
-    print(f'\n'
-          f'Statistics for {get_data_type_name(data_type)} has been written to {output_filename}')
+    click.echo()
+    click.echo(f'Statistics for {get_data_type_name(data_type)} has been written to {output_filename}')

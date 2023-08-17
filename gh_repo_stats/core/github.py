@@ -6,6 +6,8 @@ from typing import List, Dict
 import click
 import requests
 
+from gh_repo_stats import config
+
 
 def get_repos(token: str) -> List[Dict]:
     headers = {
@@ -22,13 +24,13 @@ def get_repos(token: str) -> List[Dict]:
     return data
 
 
-def get_repo_langs(token: str, repo_name: str) -> List[Dict]:
+def get_repo_langs(user_name: str, token: str, repo_name: str) -> List[Dict]:
     headers = {
         'Accept': 'application/vnd.github+json',
         'Authorization': f'Bearer {token}',
         'X-GitHub-Api-Version': '2022-11-28'
     }
-    ret = requests.get(f'https://api.github.com/repos/dipaolo/{repo_name}/languages', headers=headers)
+    ret = requests.get(f'https://api.github.com/repos/{user_name}/{repo_name}/languages', headers=headers)
     if not ret.ok:
         click.echo(f"Failed to get languages for repo {repo_name} from GitHub: {ret.reason}", err=True)
         return list()
@@ -37,14 +39,15 @@ def get_repo_langs(token: str, repo_name: str) -> List[Dict]:
     return data
 
 
-def clone_repo(repo_name: str, working_dir: str):
-    cmdline = ['git', 'clone', f'git@github.com:DiPaolo/{repo_name}.git']
+def clone_repo(user_name: str, repo_name: str, working_dir: str):
+    cmdline = ['git', 'clone', f'git@github.com:{user_name}/{repo_name}.git']
     result = subprocess.run(cmdline, cwd=working_dir, capture_output=True, universal_newlines=True, timeout=5 * 60)
 
-    # print(f"=== ret code = {result.returncode} ===\n"
-    #       f"   stdout: \n{result.stdout}\n\n"
-    #       f"   stderr: \n{result.stderr}\n"
-    #       f"=============================")
+    if config.DEBUG:
+        print(f"=== ret code = {result.returncode} ===\n"
+              f"   stdout: \n{result.stdout}\n\n"
+              f"   stderr: \n{result.stderr}\n"
+              f"=============================")
 
     if result.returncode != 0:
         return None
@@ -56,10 +59,12 @@ def calc_lines_local_repo(repo_dir: str) -> Dict:
     cmdline = ['cloc', '.', '--json']
     result = subprocess.run(cmdline, cwd=repo_dir, capture_output=True, universal_newlines=True, timeout=5 * 60)
 
-    # print(f"=== ret code = {result.returncode} ===\n"
-    #       f"   stdout: \n{result.stdout}\n\n"
-    #       f"   stderr: \n{result.stderr}\n"
-    #       f"=============================")
+
+    if config.DEBUG:
+        print(f"=== ret code = {result.returncode} ===\n"
+              f"   stdout: \n{result.stdout}\n\n"
+              f"   stderr: \n{result.stderr}\n"
+              f"=============================")
 
     data = json.loads(result.stdout)
 
