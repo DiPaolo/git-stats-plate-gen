@@ -97,11 +97,6 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addWidget(self.debug)
 
-        self.replot = QPushButton(self.widget)
-        self.replot.setObjectName(u"replot")
-
-        self.verticalLayout.addWidget(self.replot)
-
         self.verticalSpacer = QSpacerItem(20, 45, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -182,7 +177,6 @@ class Ui_Dialog(object):
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
         self.start.setText(QCoreApplication.translate("Dialog", u"Gather Statistics", None))
         self.debug.setText("")
-        self.replot.setText(QCoreApplication.translate("Dialog", u"PushButton", None))
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Image Base Name:", None))
         self.use_cache.setText(QCoreApplication.translate("Dialog", u"Use Cached Data if Possible", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent:", None))
