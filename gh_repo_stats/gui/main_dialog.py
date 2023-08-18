@@ -58,7 +58,7 @@ class MainDialog(QDialog):
         self.ui.min_percent.valueChanged.connect(self._replot)
 
         # start/stop + exit
-        self.ui.start.clicked.connect(self._start)
+        self.ui.start_stop.clicked.connect(self._start)
 
         # after connections!
         self._init_controls()
@@ -91,11 +91,11 @@ class MainDialog(QDialog):
     def _update_start_stop_status(self):
         elems = [self.ui.username, self.ui.token, self.ui.output_base_name]
         filled_elem_count = list(filter(lambda elem: len(elem.text()) > 0, elems))
-        self.ui.start.setEnabled(len(filled_elem_count) == len(elems))
+        self.ui.start_stop.setEnabled(len(filled_elem_count) == len(elems))
 
     @Slot()
     def _start(self):
-        # logger.info('Start streaming...')
+        logger.info('Start gathering statistics...')
 
         self._set_all_controls_enabled(False)
         self.started_time = datetime.datetime.now()
@@ -106,24 +106,32 @@ class MainDialog(QDialog):
 
         self.ui.debug.setText(pprint.pformat(self._stats))
 
-        logger.info('Recording started')
+        self.ui.start_stop.setText('Cancel')
+        self.ui.start_stop.clicked.disconnect()
+        self.ui.start_stop.clicked.connect(self._stop)
+
+        logger.info('Gathering started')
 
     @Slot()
     def _stop(self):
-        logger.info('Stopping recording...')
+        logger.info('Stopping gathering statistics...')
 
         self.started_time = None
         self._set_all_controls_enabled(True)
         self.stopped.emit()
 
-        logger.info('Recording stopped')
+        self.ui.start_stop.setText('Gather Statistics')
+        self.ui.start_stop.clicked.disconnect()
+        self.ui.start_stop.clicked.connect(self._start)
+
+        logger.info('Gathering stopped')
 
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [
             self.ui.username, self.ui.token, self.ui.output_base_name, self.ui.use_cache, self.ui.min_percent
         ]]
 
-        self.ui.start.setEnabled(enabled)
+        # self.ui.start_stop.setEnabled(enabled)
 
     def _replot(self):
         size = self.ui.preview.size()
