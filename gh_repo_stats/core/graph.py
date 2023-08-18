@@ -22,7 +22,7 @@ def map_data_type_to_text(data_type: DataType) -> str:
 
 def plot_graph_to_file(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
                        output_dir: str = '.', output_base_name: str = 'github_langs_stats',
-                       width: int = 1280, height: int = 720):
+                       width: int = config.DEFAULT_IMAGE_WIDTH, height: int = config.DEFAULT_IMAGE_HEIGHT):
     param_name = get_data_type_name(data_type)
     output_filename = f"{output_base_name}_{param_name}_{datetime.datetime.now().strftime('%Y-%m-%d')}.png"
     output_full_abs_filename = os.path.abspath(os.path.join(output_dir, output_filename))
@@ -38,11 +38,10 @@ def plot_graph_to_file(stats: Dict, data_type: DataType = DataType.LINES, min_pe
 
 
 def plot_graph_to_buffer(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
-                         width: int = 1280, height: int = 720) -> bytes:
+                         width: int = config.DEFAULT_IMAGE_WIDTH, height: int = config.DEFAULT_IMAGE_HEIGHT) -> bytes:
     fig, total_code = _plot_graph_internal(stats, data_type, min_percent)
 
-    image_data = pio.to_image(fig, 'png', width, height)
-    print(f'PLOT GRAPH: size={width}x{height}')
+    image_data = pio.to_image(fig, config.INTERNAL_IMAGE_TYPE, width, height)
     return image_data
 
 
@@ -51,14 +50,13 @@ def _plot_graph_internal(stats: Dict, data_type: DataType, min_percent: float) -
     lang_stats_for_param = list(
         filter(lambda x: x, [(k, v[param_name]) if param_name in v else None for k, v in stats.items()]))
     sorted_lang_stats = sorted(lang_stats_for_param, key=lambda x: x[1])
-    total_code_bytes = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
+    total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
 
-    min_abs_value = total_code_bytes * min_percent / 100.0
+    min_abs_value = total_code * min_percent / 100.0
     sorted_lang_stats = list(filter(lambda x: x if x[1] >= min_abs_value else None, sorted_lang_stats))
 
     fig = go.Figure(
         go.Bar(
-            # x=[code_bytes * 100.0 / total_code_bytes for lang, code_bytes in sorted_lang_stats],
             x=[code_bytes for lang, code_bytes in sorted_lang_stats],
             y=[lang for lang, code_bytes in sorted_lang_stats],
             marker=dict(
@@ -74,7 +72,7 @@ def _plot_graph_internal(stats: Dict, data_type: DataType, min_percent: float) -
         layout_title_font_size=36
     )
 
-    y_s = [round(code_bytes * 100.0 / total_code_bytes, 1) for lang, code_bytes in sorted_lang_stats]
+    y_s = [round(code_bytes * 100.0 / total_code, 1) for lang, code_bytes in sorted_lang_stats]
     x = [lang for lang, code_bytes in sorted_lang_stats]
 
     annotations = []
@@ -96,8 +94,6 @@ def _plot_graph_internal(stats: Dict, data_type: DataType, min_percent: float) -
                             showarrow=False))
 
     fig.update_layout(annotations=annotations)
-
-    total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
 
     if config.DEBUG:
         pprint.pprint(sorted_lang_stats)

@@ -74,14 +74,19 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.stats_status = QLabel(self.widget)
+        self.stats_status.setObjectName(u"stats_status")
+
+        self.horizontalLayout_6.addWidget(self.stats_status)
+
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer_4)
 
-        self.start = QPushButton(self.widget)
-        self.start.setObjectName(u"start")
+        self.start_stop = QPushButton(self.widget)
+        self.start_stop.setObjectName(u"start_stop")
 
-        self.horizontalLayout_6.addWidget(self.start)
+        self.horizontalLayout_6.addWidget(self.start_stop)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_6)
@@ -175,7 +180,8 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
         self.label.setText(QCoreApplication.translate("Dialog", u"GitHub User Name:", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
-        self.start.setText(QCoreApplication.translate("Dialog", u"Gather Statistics", None))
+        self.stats_status.setText(QCoreApplication.translate("Dialog", u"<statistics status>", None))
+        self.start_stop.setText(QCoreApplication.translate("Dialog", u"Gather Statistics", None))
         self.debug.setText("")
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Image Base Name:", None))
         self.use_cache.setText(QCoreApplication.translate("Dialog", u"Use Cached Data if Possible", None))

@@ -77,7 +77,6 @@ class MainDialog(QDialog):
         event.accept()
 
     def resizeEvent(self, event):
-        print(f'RESIZE size={event.size()}')
         self._replot()
         event.accept()
 

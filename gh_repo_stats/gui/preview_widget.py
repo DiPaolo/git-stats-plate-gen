@@ -1,6 +1,7 @@
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget
 
+from gh_repo_stats import config
 from gh_repo_stats.gui.ui.ui_preview_widget import Ui_Form
 
 
@@ -15,9 +16,5 @@ class PreviewWidget(QWidget):
         self.ui.label.setPixmap(self._pixmap)
 
     def set_data(self, data: bytes):
-        self._pixmap.loadFromData(data, format='png')
+        self._pixmap.loadFromData(data, format=config.INTERNAL_IMAGE_TYPE)
         self.ui.label.setPixmap(self._pixmap)
-
-    def resizeEvent(self, event):
-        print(f'Preview RESIZE size={event.size()}')
-        event.accept()

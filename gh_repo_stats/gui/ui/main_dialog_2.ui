@@ -69,6 +69,13 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
+          <widget class="QLabel" name="stats_status">
+           <property name="text">
+            <string>&lt;statistics status&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -82,7 +89,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="start">
+          <widget class="QPushButton" name="start_stop">
            <property name="text">
             <string>Gather Statistics</string>
            </property>
