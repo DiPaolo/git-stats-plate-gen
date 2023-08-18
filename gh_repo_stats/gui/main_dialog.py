@@ -40,6 +40,7 @@ class MainDialog(QDialog):
         self.ui.splitter.restoreState(settings.get_settings_byte_array_value(SettingsKey.SPLITTER_STATE))
 
         self._stats = load_stats()
+        self._update_cur_stats_status()
 
         #
         # connections
@@ -103,6 +104,7 @@ class MainDialog(QDialog):
 
         if self._stats is None:
             self._stats = collect_data(self.ui.username.text(), self.ui.token.text())
+            self._update_cur_stats_status()
 
         self.ui.debug.setText(pprint.pformat(self._stats))
 
@@ -134,7 +136,19 @@ class MainDialog(QDialog):
         # self.ui.start_stop.setEnabled(enabled)
 
     def _replot(self):
+        if not self._is_data_ready():
+            return
+
         size = self.ui.preview.size()
         plot_data = plot_graph_to_buffer(self._stats, min_percent=self.ui.min_percent.value(),
                                          width=size.width(), height=size.height())
         self.ui.preview.set_data(plot_data)
+
+    def _is_data_ready(self) -> bool:
+        return self._stats is not None
+
+    def _update_cur_stats_status(self):
+        if self._is_data_ready():
+            self.ui.stats_status.setText('<p style="color:green;">Statistics Ready</p')
+        else:
+            self.ui.stats_status.setText('<p style="color:tomato;">Statistics Not Ready</p')

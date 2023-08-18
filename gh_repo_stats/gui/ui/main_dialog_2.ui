@@ -73,6 +73,9 @@
            <property name="text">
             <string>&lt;statistics status&gt;</string>
            </property>
+           <property name="textFormat">
+            <enum>Qt::RichText</enum>
+           </property>
           </widget>
          </item>
          <item>

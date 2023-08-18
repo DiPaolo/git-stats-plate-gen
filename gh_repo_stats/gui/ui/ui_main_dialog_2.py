@@ -76,6 +76,7 @@ class Ui_Dialog(object):
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.stats_status = QLabel(self.widget)
         self.stats_status.setObjectName(u"stats_status")
+        self.stats_status.setTextFormat(Qt.RichText)
 
         self.horizontalLayout_6.addWidget(self.stats_status)
 
