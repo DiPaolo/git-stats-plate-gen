@@ -1,10 +1,9 @@
 import datetime
 import getpass
 import pprint
-from typing import Optional
 
 from PySide6 import QtCore
-from PySide6.QtCore import Slot, Signal, QSize
+from PySide6.QtCore import Slot, Signal, QTimer
 from PySide6.QtWidgets import QDialog
 
 from gh_repo_stats import config
@@ -35,14 +34,12 @@ class MainDialog(QDialog):
 
         logger.info('Application starting...')
 
-        # self.started.connect(
-        #     lambda: self.tray_icon.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogYesButton)))
-        # self.stopped.connect(
-        #     lambda: self.tray_icon.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogNoButton)))
-
         # restore position and state
         self.setWindowState(settings.get_settings_byte_array_value(SettingsKey.WINDOW_STATE, QtCore.Qt.WindowNoState))
         self.restoreGeometry(settings.get_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY))
+        self.ui.splitter.restoreState(settings.get_settings_byte_array_value(SettingsKey.SPLITTER_STATE))
+
+        self._stats = load_stats()
 
         #
         # connections
@@ -58,13 +55,16 @@ class MainDialog(QDialog):
             self.ui.username, self.ui.token, self.ui.output_base_name
         ]]
 
+        self.ui.min_percent.valueChanged.connect(self._replot)
+
         # start/stop + exit
         self.ui.start.clicked.connect(self._start)
 
         # after connections!
         self._init_controls()
 
-        self._stats = load_stats()
+        # change preview size to new size
+        QTimer.singleShot(0, lambda: self._replot())
 
     def closeEvent(self, event):
         logger.info('Exiting application...')
@@ -72,12 +72,13 @@ class MainDialog(QDialog):
         # save window position and size
         settings.set_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY, self.saveGeometry())
         settings.set_settings_byte_array_value(SettingsKey.WINDOW_STATE, self.windowState())
+        settings.set_settings_byte_array_value(SettingsKey.SPLITTER_STATE, self.ui.splitter.saveState())
 
         event.accept()
 
     def resizeEvent(self, event):
-        print(f'resizeEvent: size={event.size()}')
-        self._replot(self.ui.preview.size())
+        print(f'RESIZE size={event.size()}')
+        self._replot()
         event.accept()
 
     def _init_controls(self):
@@ -125,12 +126,8 @@ class MainDialog(QDialog):
 
         self.ui.start.setEnabled(enabled)
 
-    def _replot(self, size: Optional[QSize] = None):
-        print(f'REPLOT size={size}')
-
-        if size is None:
-            size = self.ui.preview.size()
-
+    def _replot(self):
+        size = self.ui.preview.size()
         plot_data = plot_graph_to_buffer(self._stats, min_percent=self.ui.min_percent.value(),
                                          width=size.width(), height=size.height())
         self.ui.preview.set_data(plot_data)

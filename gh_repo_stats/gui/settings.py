@@ -8,6 +8,7 @@ from PySide6.QtCore import QSettings
 class SettingsKey(Enum):
     WINDOW_GEOMETRY = 'windowGeometry'
     WINDOW_STATE = 'windowState'
+    SPLITTER_STATE = 'splitterState'
 
     LOG_WINDOW_GEOMETRY = 'logWindowGeometry'
 

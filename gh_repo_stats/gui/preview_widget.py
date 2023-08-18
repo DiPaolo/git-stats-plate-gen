@@ -19,5 +19,5 @@ class PreviewWidget(QWidget):
         self.ui.label.setPixmap(self._pixmap)
 
     def resizeEvent(self, event):
-        print(f'resizeEvent: size={event}')
+        print(f'Preview RESIZE size={event.size()}')
         event.accept()

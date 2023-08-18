@@ -39,7 +39,6 @@ def plot_graph_to_file(stats: Dict, data_type: DataType = DataType.LINES, min_pe
 
 def plot_graph_to_buffer(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
                          width: int = 1280, height: int = 720) -> bytes:
-    param_name = get_data_type_name(data_type)
     fig, total_code = _plot_graph_internal(stats, data_type, min_percent)
 
     image_data = pio.to_image(fig, 'png', width, height)
