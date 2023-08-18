@@ -1,1 +1,11 @@
 DEBUG=False
+
+ORGANIZATION_NAME = "DiPaolo"
+ORGANIZATION_DOMAIN = 'dipaolo.dev'
+APPLICATION_NAME = 'gh-repo-stats'
+APPLICATION_NAME_LOWERCASE = 'gh_repo_stats'
+
+# defaults
+DEFAULT_USE_CACHE = True
+DEFAULT_OUT_IMAGE_BASE_NAME = 'github_lang_stats'
+DEFAULT_MIN_PERCENT = 1.0

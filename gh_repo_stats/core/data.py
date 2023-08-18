@@ -92,6 +92,9 @@ def collect_data(user_name: str, token: str):
 
             lang_stats[lang]['lines'] += lines
 
+        if len(lang_stats) > 3:
+            break
+
     return lang_stats
 
 

@@ -1,8 +1,13 @@
-from typing import List, Tuple
+import datetime
+import os.path
+import pprint
+from typing import Dict
 
 import click
 import plotly.graph_objects as go
+import plotly.io as pio
 
+from gh_repo_stats import config
 from gh_repo_stats.core.common import DataType, get_data_type_name
 
 
@@ -15,8 +20,38 @@ def map_data_type_to_text(data_type: DataType) -> str:
     return map_data_type_to_text(data_type)
 
 
-def plot_graph(lang_stats: List[Tuple[str, int]], data_type: DataType, min_percent: float, output_filename: str):
-    sorted_lang_stats = sorted(lang_stats, key=lambda x: x[1])
+def plot_graph_to_file(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
+                       output_dir: str = '.', output_base_name: str = 'github_langs_stats',
+                       width: int = 1280, height: int = 720):
+    param_name = get_data_type_name(data_type)
+    output_filename = f"{output_base_name}_{param_name}_{datetime.datetime.now().strftime('%Y-%m-%d')}.png"
+    output_full_abs_filename = os.path.abspath(os.path.join(output_dir, output_filename))
+    fig, total_code = _plot_graph_internal(stats, data_type, min_percent)
+
+    fig.write_image(output_full_abs_filename, width=width, height=height)
+
+    click.echo()
+    click.echo(f'Statistics for {get_data_type_name(data_type)} has been saved to {output_full_abs_filename}')
+    click.echo(f'Total {param_name}: {total_code}')
+
+    return output_full_abs_filename
+
+
+def plot_graph_to_buffer(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
+                         width: int = 1280, height: int = 720) -> bytes:
+    param_name = get_data_type_name(data_type)
+    fig, total_code = _plot_graph_internal(stats, data_type, min_percent)
+
+    image_data = pio.to_image(fig, 'png', width, height)
+    print(f'PLOT GRAPH: size={width}x{height}')
+    return image_data
+
+
+def _plot_graph_internal(stats: Dict, data_type: DataType, min_percent: float) -> (go.Figure, int):
+    param_name = get_data_type_name(data_type)
+    lang_stats_for_param = list(
+        filter(lambda x: x, [(k, v[param_name]) if param_name in v else None for k, v in stats.items()]))
+    sorted_lang_stats = sorted(lang_stats_for_param, key=lambda x: x[1])
     total_code_bytes = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
 
     min_abs_value = total_code_bytes * min_percent / 100.0
@@ -49,7 +84,7 @@ def plot_graph(lang_stats: List[Tuple[str, int]], data_type: DataType, min_perce
     for yd, xd in zip(y_s, x):
         annotations.append(dict(xref='x1', yref='y1',
                                 # x=-200, y=-100,
-                                y=xd, x=min(500, 500),
+                                y=xd, x=min(100, 100),
                                 text=f'{yd} %',
                                 font=dict(family='Arial', size=12,
                                           color='rgb(69, 75, 27)'),
@@ -63,6 +98,11 @@ def plot_graph(lang_stats: List[Tuple[str, int]], data_type: DataType, min_perce
 
     fig.update_layout(annotations=annotations)
 
-    fig.write_image(output_filename, width=1280, height=720)
-    click.echo()
-    click.echo(f'Statistics for {get_data_type_name(data_type)} has been written to {output_filename}')
+    total_code = sum(code_bytes for lang, code_bytes in sorted_lang_stats)
+
+    if config.DEBUG:
+        pprint.pprint(sorted_lang_stats)
+        for lang, code in sorted_lang_stats:
+            click.echo(f'  {lang} - {code} ({code * 100.0 / total_code :4.2f}%)')
+
+    return fig, total_code
