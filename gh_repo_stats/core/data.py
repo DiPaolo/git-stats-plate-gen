@@ -20,7 +20,7 @@ def collect_data(user_name: str, token: str):
         if left == 0:
             return stats
 
-        if config.DEBUG and processed == config.MAX_REPOS_TO_PROCESS:
+        if config.DEBUG and processed >= config.MAX_REPOS_TO_PROCESS:
             return stats
 
 

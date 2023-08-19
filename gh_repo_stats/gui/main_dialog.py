@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QDialog
 
 from gh_repo_stats import config
 from gh_repo_stats.core.cache import load_stats
+from gh_repo_stats.core.common import DataType, get_data_type_name
 from gh_repo_stats.core.graph import plot_graph_to_buffer
 from gh_repo_stats.gui import logger, settings
 from gh_repo_stats.gui.log_window import LogWindow
@@ -22,6 +23,7 @@ class MainDialog(QDialog):
 
     _thread = None
     _worker = None
+    _timer = None
 
     def __init__(self):
         super(MainDialog, self).__init__()
@@ -113,8 +115,6 @@ class MainDialog(QDialog):
         #     self._stats = collect_data(self.ui.username.text(), self.ui.token.text())
         #     self._update_cur_stats_status()
 
-        self.ui.debug.setText(pprint.pformat(self._stats))
-
         self.ui.start_stop.setText('Cancel')
         self.ui.start_stop.clicked.disconnect()
         self.ui.start_stop.clicked.connect(self._stop)
@@ -130,9 +130,9 @@ class MainDialog(QDialog):
 
         self._thread.start()
 
-        # self._timer = QTimer()
-        # self._timer.timeout.connect(self._recalc)
-        # self._timer.start(1000)
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._update_cur_stats_info)
+        self._timer.start(1000)
 
         logger.info('Gathering started')
 
@@ -140,11 +140,15 @@ class MainDialog(QDialog):
     def _stop(self):
         logger.info('Stopping gathering statistics...')
 
-        if self._worker is not None:
+        if self._timer:
+            self._timer.stop()
+            self._timer = None
+
+        if self._worker:
             self._worker.stop()
             self._worker = None
 
-        if self._thread is not None:
+        if self._thread:
             self._thread.quit()
             self._thread.wait()
             self._thread = None
@@ -183,3 +187,18 @@ class MainDialog(QDialog):
             self.ui.stats_status.setText('<p style="color:green;">Statistics Ready</p')
         else:
             self.ui.stats_status.setText('<p style="color:tomato;">Statistics Not Ready</p')
+
+    def _update_cur_stats_info(self):
+        cur_stats = self._worker.cur_stats
+
+        param_name = get_data_type_name(DataType.LINES)
+        lang_stats_lines = list(
+            filter(lambda x: x, [(k, v[param_name]) if param_name in v else None for k, v in cur_stats.items()])
+        )
+        sorted_lang_stats_lines = sorted(lang_stats_lines, key=lambda x: x[1], reverse=True)
+
+        text = f'{self._worker.processed} / {self._worker.total} repos\n'
+        text += '\n'
+        text += '\n'.join([f'{v[0]}: {v[1]} LOC' for v in sorted_lang_stats_lines])
+
+        self.ui.debug.setText(text)
