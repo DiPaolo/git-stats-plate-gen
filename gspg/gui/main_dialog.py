@@ -6,15 +6,15 @@ from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread
 from PySide6.QtWidgets import QDialog
 
-from gh_repo_stats import config
-from gh_repo_stats.core.cache import load_stats
-from gh_repo_stats.core.common import DataType, get_data_type_name
-from gh_repo_stats.core.graph import plot_graph_to_buffer
-from gh_repo_stats.gui import logger, settings
-from gh_repo_stats.gui.log_window import LogWindow
-from gh_repo_stats.gui.settings import SettingsKey
-from gh_repo_stats.gui.thread_worker import ThreadWorker
-from gh_repo_stats.gui.ui.ui_main_dialog_2 import Ui_Dialog
+from gspg import config
+from gspg.core.cache import load_stats
+from gspg.core.common import DataType, get_data_type_name
+from gspg.core.graph import plot_graph_to_buffer
+from gspg.gui import logger, settings
+from gspg.gui.log_window import LogWindow
+from gspg.gui.settings import SettingsKey
+from gspg.gui.thread_worker import ThreadWorker
+from gspg.gui.ui.ui_main_dialog_2 import Ui_Dialog
 
 
 class MainDialog(QDialog):

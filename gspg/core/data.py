@@ -3,8 +3,8 @@ import pprint
 import tempfile
 from typing import Dict, Optional
 
-from gh_repo_stats import config
-from gh_repo_stats.core.github import clone_repo, calc_lines_local_repo
+from gspg import config
+from gspg.core.github import clone_repo, calc_lines_local_repo
 
 
 class RetCode(enum.Enum):
@@ -26,10 +26,10 @@ def collect_data(user_name: str, token: str):
 
 def collect_data_gen(user_name: str, token: str):
     if token.startswith('github'):
-        from gh_repo_stats.core.github import get_repo_langs, get_repos
+        from gspg.core.github import get_repo_langs, get_repos
     else:
         yield 0, 0, None
-        # from gh_repo_stats.core.gitlab import get_repo_langs, get_repos
+        # from gspg.core.gitlab import get_repo_langs, get_repos
 
     repos = get_repos(token)
 
@@ -143,9 +143,9 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
 
 def _calc_main(user_name: str, token: str, repo: Dict) -> Dict:
     if token.startswith('github'):
-        from gh_repo_stats.core.github import get_repo_langs
+        from gspg.core.github import get_repo_langs
     else:
-        from gh_repo_stats.core.gitlab import get_repo_langs
+        from gspg.core.gitlab import get_repo_langs
 
     repo_langs = get_repo_langs(user_name, token, repo['name'])
     if config.DEBUG:

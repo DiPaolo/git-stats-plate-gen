@@ -1,2 +1,2 @@
-# gh-repo-stats
-CLI tool to generate histogram of your GitHub/GitLab repositories
+# Git Stats Plate Generator
+CLI & GUI tool to generate image plate for your GitHub repositories.

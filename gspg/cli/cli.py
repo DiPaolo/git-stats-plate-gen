@@ -2,12 +2,12 @@ import sys
 
 import click
 
-from gh_repo_stats import config
-from gh_repo_stats.cli.exit_codes import ExitCode
-from gh_repo_stats.core import cache
-from gh_repo_stats.core.common import DataType
-from gh_repo_stats.core.data import collect_data
-from gh_repo_stats.core.graph import plot_graph_to_file
+from gspg import config
+from gspg.cli.exit_codes import ExitCode
+from gspg.core import cache
+from gspg.core.common import DataType
+from gspg.core.data import collect_data
+from gspg.core.graph import plot_graph_to_file
 
 
 @click.command()

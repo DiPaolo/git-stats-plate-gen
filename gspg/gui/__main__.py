@@ -4,9 +4,9 @@ import sys
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import QApplication
 
-from gh_repo_stats import config
-# from gh_repo_stats.app import init_app, deinit_app
-from gh_repo_stats.gui.main_dialog import MainDialog
+from gspg import config
+# from gspg.app import init_app, deinit_app
+from gspg.gui.main_dialog import MainDialog
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 

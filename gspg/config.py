@@ -3,8 +3,8 @@ MAX_REPOS_TO_PROCESS = 12 if DEBUG else 2**32  # applied in DEBUG only
 
 ORGANIZATION_NAME = "DiPaolo"
 ORGANIZATION_DOMAIN = 'dipaolo.dev'
-APPLICATION_NAME = 'gh-repo-stats'
-APPLICATION_NAME_LOWERCASE = 'gh_repo_stats'
+APPLICATION_NAME = 'Git Stats Plate Generator'
+APPLICATION_NAME_LOWERCASE = 'git_stats_plate_gen'
 
 # defaults
 DEFAULT_USE_CACHE = True

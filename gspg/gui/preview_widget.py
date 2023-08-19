@@ -1,8 +1,8 @@
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget
 
-from gh_repo_stats import config
-from gh_repo_stats.gui.ui.ui_preview_widget import Ui_Form
+from gspg import config
+from gspg.gui.ui.ui_preview_widget import Ui_Form
 
 
 class PreviewWidget(QWidget):
