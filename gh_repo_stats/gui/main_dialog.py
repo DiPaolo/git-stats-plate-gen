@@ -3,22 +3,25 @@ import getpass
 import pprint
 
 from PySide6 import QtCore
-from PySide6.QtCore import Slot, Signal, QTimer
+from PySide6.QtCore import Slot, Signal, QTimer, QThread
 from PySide6.QtWidgets import QDialog
 
 from gh_repo_stats import config
 from gh_repo_stats.core.cache import load_stats
-from gh_repo_stats.core.data import collect_data
 from gh_repo_stats.core.graph import plot_graph_to_buffer
 from gh_repo_stats.gui import logger, settings
 from gh_repo_stats.gui.log_window import LogWindow
 from gh_repo_stats.gui.settings import SettingsKey
+from gh_repo_stats.gui.thread_worker import ThreadWorker
 from gh_repo_stats.gui.ui.ui_main_dialog_2 import Ui_Dialog
 
 
 class MainDialog(QDialog):
     started = Signal()
     stopped = Signal()
+
+    _thread = None
+    _worker = None
 
     def __init__(self):
         super(MainDialog, self).__init__()
@@ -70,6 +73,8 @@ class MainDialog(QDialog):
     def closeEvent(self, event):
         logger.info('Exiting application...')
 
+        self._stop()
+
         # save window position and size
         settings.set_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY, self.saveGeometry())
         settings.set_settings_byte_array_value(SettingsKey.WINDOW_STATE, self.windowState())
@@ -96,15 +101,17 @@ class MainDialog(QDialog):
 
     @Slot()
     def _start(self):
+        self._stop()
+
         logger.info('Start gathering statistics...')
 
         self._set_all_controls_enabled(False)
         self.started_time = datetime.datetime.now()
         self.started.emit()
 
-        if self._stats is None:
-            self._stats = collect_data(self.ui.username.text(), self.ui.token.text())
-            self._update_cur_stats_status()
+        # if self._stats is None:
+        #     self._stats = collect_data(self.ui.username.text(), self.ui.token.text())
+        #     self._update_cur_stats_status()
 
         self.ui.debug.setText(pprint.pformat(self._stats))
 
@@ -112,11 +119,35 @@ class MainDialog(QDialog):
         self.ui.start_stop.clicked.disconnect()
         self.ui.start_stop.clicked.connect(self._stop)
 
+        self._thread = QThread()
+        self._worker = ThreadWorker(self.ui.username.text(), self.ui.token.text())
+        self._worker.moveToThread(self._thread)
+        self._worker.started.connect(self.started)
+        self._worker.finished.connect(self._stop)
+
+        self._thread.started.connect(self._worker.run)
+        self._worker.progress.connect(self.ui.progress_bar.setValue)
+
+        self._thread.start()
+
+        # self._timer = QTimer()
+        # self._timer.timeout.connect(self._recalc)
+        # self._timer.start(1000)
+
         logger.info('Gathering started')
 
     @Slot()
     def _stop(self):
         logger.info('Stopping gathering statistics...')
+
+        if self._worker is not None:
+            self._worker.stop()
+            self._worker = None
+
+        if self._thread is not None:
+            self._thread.quit()
+            self._thread.wait()
+            self._thread = None
 
         self.started_time = None
         self._set_all_controls_enabled(True)
