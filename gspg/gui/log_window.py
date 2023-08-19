@@ -3,8 +3,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QMainWindow
 
-from gspg.gui import settings
 from gspg.gui import logger
+from gspg.gui import settings
 from gspg.gui.settings import SettingsKey
 from gspg.gui.ui.ui_log_window import Ui_LogWindow
 
@@ -24,7 +24,8 @@ class LogWindow(QMainWindow):
         # self.setWindowFlag(Qt.WindowType.WindowSystemMenuHint, False)
 
         # restore position and state
-        # self.setWindowState(settings.get_settings_byte_array_value(SettingsKey.LOG_WINDOW_STATE, QtCore.Qt.WindowNoState))
+        # self.setWindowState(
+        #     settings.get_settings_byte_array_value(SettingsKey.LOG_WINDOW_STATE, QtCore.Qt.WindowNoState))
         self.restoreGeometry(settings.get_settings_byte_array_value(SettingsKey.LOG_WINDOW_GEOMETRY))
 
         # log; setup it before setting it as a target for logger

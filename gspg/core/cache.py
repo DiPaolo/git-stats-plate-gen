@@ -33,5 +33,5 @@ def load_stats() -> Optional[Dict]:
                 return None
 
             return data['stats']
-    except:
+    except FileNotFoundError:
         return None
