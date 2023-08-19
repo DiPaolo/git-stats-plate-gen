@@ -30,7 +30,8 @@ from gspg.core.graph import plot_graph_to_file
               help='Lower boundary (%) that language must have to be shown')
 def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
     if not use_cache and user is None:
-        click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument")
+        click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument",
+                   err=True)
         sys.exit(ExitCode.INVALID_CMDLINE_USER.value)
 
     stats = None
@@ -42,7 +43,8 @@ def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_perce
 
     if stats is None:
         if user is None:
-            click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument")
+            click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line "
+                       "argument", err=True)
             sys.exit(ExitCode.INVALID_CMDLINE_USER.value)
 
         if token is None:
@@ -50,7 +52,7 @@ def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_perce
             if token is None:
                 click.echo(
                     "ERROR: token is not specified. Please specify it using '-t'/'--token' command line argument "
-                    "or during being asked for in command line prompt")
+                    "or during being asked for in command line prompt", err=True)
                 sys.exit(ExitCode.INVALID_CMDLINE_TOKEN.value)
 
         stats = collect_data(user, token)
