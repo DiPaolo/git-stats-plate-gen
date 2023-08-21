@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }} @ {{ matrix.os}}
+      - name: Set up Python ${{ matrix.python-version }}@${{ matrix.os}}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -41,9 +41,9 @@ jobs:
           ls -l dist
           
           if [ "$RUNNER_OS" == "Linux" ]; then
-            tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
+            tar zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen/*
+            tar zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen/*
           elif [ "$RUNNER_OS" == "Windows" ]; then
             Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
           fi
