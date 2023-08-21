@@ -3,15 +3,19 @@ name: Build & Package
 on: [push]
 jobs:
   build:
-  
-    runs-on: ubuntu-latest
     strategy:
       matrix:
+        os: [
+          'ubuntu-22.04',
+#          'windows-2019',
+          'macos-13',
+          'macos-13-xl'
+        ]
         python-version: ["3.11"]
-
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }} @ {{ matrix.os}}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -30,15 +34,25 @@ jobs:
 #        run: |
 #          pip install pytest
 #          pytest
-      - name: 'Building binaries: CLI'
+      - name: 'Building binaries: GUI & CLI'
         run: |
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
-      - name: 'Building binaries: GUI'
-        run: |
-          pip install pyinstaller
-          pyinstaller --name 'Git Stats Plate Genrator' --noconsole --path .venv/lib/python3.11/site-packages --onedir gspg/gui/__main__.py
+          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.11/site-packages --onedir gspg/gui/__main__.py
           ls -l dist
+          
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
+          fi
       - name: Packaging binaries
         run: |
           echo "Will be done soon"
+      - name: Uploading binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact-name
+          path: git_stats_plate_gen.tar.gz
