@@ -8,8 +8,7 @@ jobs:
         os: [
           'ubuntu-22.04',
 #          'windows-2019',
-          'macos-13',
-          'macos-13-xl'
+          'macos-13'
         ]
         python-version: ["3.11"]
     runs-on: ${{ matrix.os }}
@@ -44,7 +43,7 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
+            tar -zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen/*
           elif [ "$RUNNER_OS" == "Windows" ]; then
             Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
           fi
