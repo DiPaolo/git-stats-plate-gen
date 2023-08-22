@@ -45,13 +45,14 @@ jobs:
             echo "== DIPAOLO == Linux"
           elif [ "$RUNNER_OS" == "macOS" ]; then
             echo "== DIPAOLO == MacOS"
-            tar --help
-            echo "== DIPAOLO == version of tar"
-            tar --version
-            echo "== DIPAOLO == trying to compress"
-            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
+#            tar --help
+#            echo "== DIPAOLO == version of tar"
+#            tar --version
+#            echo "== DIPAOLO == trying to compress"
+#            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
+            echo "== DIPAOLO == Windows"
+#            Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
           fi
       - name: Packaging binaries
         run: |
@@ -60,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: my-artifact-name
-          path: git_stats_plate_gen.tar.gz
+          path: git_stats_plate_gen_{{ matrix.os }}.tar.gz
