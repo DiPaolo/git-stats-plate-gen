@@ -33,7 +33,6 @@ jobs:
         run: |
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
-          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.11/site-packages --onedir gspg/gui/__main__.py
           ls -l dist
           ls -l dist/git_stats_plate_gen
           
@@ -50,5 +49,5 @@ jobs:
       - name: Uploading binaries
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact-name
-          path: git_stats_plate_gen_{{ matrix.os }}.tar.gz
+          name: my-artifact-name-{{ matrix.os }}
+          path: git_stats_plate_gen
