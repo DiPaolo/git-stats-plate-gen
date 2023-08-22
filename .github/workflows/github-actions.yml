@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: my-artifact-name-{{ matrix.os }}
-          path: git_stats_plate_gen
+          path: git_stats_plate_gen/*
