@@ -30,6 +30,7 @@ jobs:
           # default set of ruff rules with GitHub Annotations
           ruff --format=github --target-version=py37 .
       - name: 'Build binaries: GUI & CLI'
+        shell: bash
         run: |
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
