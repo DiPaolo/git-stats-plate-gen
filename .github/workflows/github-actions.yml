@@ -36,21 +36,35 @@ jobs:
           pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir gspg/gui/__main__.py
           ls -l dist
           ls -l dist/git_stats_plate_gen
-          ls -l 'Git Stats Plate Generator'
+          ls -l "Git Stats Plate Generator"
 
           if [ "$RUNNER_OS" == "Linux" ]; then
             echo "== DIPAOLO == Linux"
             ls -l dist/git_stats_plate_gen/kaleido
+
             echo "== DIPAOLO == removing kaleido executable"
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
-            echo "== DIPAOLO == trying to compress"
-            tar -czvf git_stats_plate_gen.tar.gz dist/git_stats_plate_gen
+            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
+
+            echo "== DIPAOLO == compress"
+            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+
+            echo "== DIPAOLO == list dist"
+            ls -lh dist
+            echo "== DIPAOLO == list cur dir"
+            ls -lh .
           elif [ "$RUNNER_OS" == "macOS" ]; then
             echo "== DIPAOLO == MacOS"
+
             echo "== DIPAOLO == removing kaleido executable"
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
-            echo "== DIPAOLO == trying to compress"
-            tar -czvf git_stats_plate_gen.tar.gz dist/git_stats_plate_gen
+            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
+
+            echo "== DIPAOLO == compress"
+            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+
             echo "== DIPAOLO == list dist"
             ls -lh dist
             echo "== DIPAOLO == list cur dir"
@@ -65,4 +79,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: git_stats_plate_gen_cli_${{matrix.os}}_b${{github.run_number}}
-          path: git_stats_plate_gen.tar.gz
+          path: git_stats_plate_gen_cli.tar.gz
