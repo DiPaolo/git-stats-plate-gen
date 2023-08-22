@@ -33,9 +33,10 @@ jobs:
         run: |
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
-          pyinstaller --name 'Git Stats Plate Genrator' --noconsole --path .venv/lib/python3.9/site-packages --onedir gspg/gui/__main__.py
+          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir gspg/gui/__main__.py
           ls -l dist
           ls -l dist/git_stats_plate_gen
+          ls -l 'Git Stats Plate Generator'
 
           if [ "$RUNNER_OS" == "Linux" ]; then
             echo "== DIPAOLO == Linux"
