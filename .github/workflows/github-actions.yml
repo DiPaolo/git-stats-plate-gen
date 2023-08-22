@@ -29,10 +29,6 @@ jobs:
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py311 .
           # default set of ruff rules with GitHub Annotations
           ruff --format=github --target-version=py37 .
-#      - name: Test with pytest
-#        run: |
-#          pip install pytest
-#          pytest
       - name: 'Building binaries: GUI & CLI'
         run: |
           pip install pyinstaller
@@ -45,14 +41,8 @@ jobs:
             echo "== DIPAOLO == Linux"
           elif [ "$RUNNER_OS" == "macOS" ]; then
             echo "== DIPAOLO == MacOS"
-#            tar --help
-#            echo "== DIPAOLO == version of tar"
-#            tar --version
-#            echo "== DIPAOLO == trying to compress"
-#            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
           elif [ "$RUNNER_OS" == "Windows" ]; then
             echo "== DIPAOLO == Windows"
-#            Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
           fi
       - name: Packaging binaries
         run: |
