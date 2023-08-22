@@ -42,8 +42,13 @@ jobs:
           ls -l dist/git_stats_plate_gen
           
           if [ "$RUNNER_OS" == "Linux" ]; then
+            echo "== DIPAOLO == Linux"
+            tar --help
+            tar --version
             tar zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
           elif [ "$RUNNER_OS" == "macOS" ]; then
+            echo "== DIPAOLO == MacOS"
+            tar --help
             tar --version
             tar zcvf artifact.tar.gz git_stats_plate_gen
           elif [ "$RUNNER_OS" == "Windows" ]; then
