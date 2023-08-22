@@ -42,7 +42,7 @@ jobs:
           ls -l dist/git_stats_plate_gen
           
           if [ "$RUNNER_OS" == "Linux" ]; then
-#            echo "== DIPAOLO == Linux"
+            echo "== DIPAOLO == Linux"
 #            tar --help
 #            tar --version
 #            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
