@@ -65,5 +65,5 @@ jobs:
       - name: Uploading binaries
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact-name-{{ matrix.os }}
+          name: git_stats_plate_gen_cli_${{matrix.os}}_b${{github.run_number}}
           path: git_stats_plate_gen.tar.gz
