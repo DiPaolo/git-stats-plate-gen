@@ -72,9 +72,15 @@ jobs:
             ls -lh .
           elif [ "$RUNNER_OS" == "Windows" ]; then
             echo "== DIPAOLO == Windows"
-            Compress-Archive -Path dist/git_stats_plate_gen -Destination git_stats_plate_gen.zip
-            Get-ChildItem .
-            Get-ChildItem dist
+
+            echo "== DIPAOLO == compress"
+            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+
+            echo "== DIPAOLO == list dist"
+            ls -lh dist
+            echo "== DIPAOLO == list cur dir"
+            ls -lh .
           fi
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
