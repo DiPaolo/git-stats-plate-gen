@@ -42,14 +42,16 @@ jobs:
           ls -l dist/git_stats_plate_gen
           
           if [ "$RUNNER_OS" == "Linux" ]; then
-            echo "== DIPAOLO == Linux"
-            tar --help
-            tar --version
-            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
+#            echo "== DIPAOLO == Linux"
+#            tar --help
+#            tar --version
+#            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
           elif [ "$RUNNER_OS" == "macOS" ]; then
             echo "== DIPAOLO == MacOS"
             tar --help
+            echo "== DIPAOLO == version of tar"
             tar --version
+            echo "== DIPAOLO == trying to compress"
             tar -czvf dip_art.tar.gz ./git_stats_plate_gen
           elif [ "$RUNNER_OS" == "Windows" ]; then
             Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
