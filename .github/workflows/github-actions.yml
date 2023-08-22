@@ -45,12 +45,12 @@ jobs:
             echo "== DIPAOLO == Linux"
             tar --help
             tar --version
-            tar zcvf git_stats_plate_gen.tar.gz git_stats_plate_gen
+            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
           elif [ "$RUNNER_OS" == "macOS" ]; then
             echo "== DIPAOLO == MacOS"
             tar --help
             tar --version
-            tar zcvf artifact.tar.gz git_stats_plate_gen
+            tar -czvf dip_art.tar.gz ./git_stats_plate_gen
           elif [ "$RUNNER_OS" == "Windows" ]; then
             Compress-Archive -Path git_stats_plate_gen -Destination git_stats_plate_gen.zip
           fi
