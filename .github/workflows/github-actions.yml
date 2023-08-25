@@ -118,3 +118,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: git_stats_plate_gen_cli.tar.gz
           asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
+          asset_content_type: application/gzip
