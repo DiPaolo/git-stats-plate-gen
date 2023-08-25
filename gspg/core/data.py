@@ -20,9 +20,6 @@ def collect_data(user_name: str, token: str):
         if left == 0:
             return stats
 
-        if config.DEBUG and processed >= config.MAX_REPOS_TO_PROCESS:
-            return stats
-
 
 def collect_data_gen(user_name: str, token: str):
     if token.startswith('github'):
@@ -41,7 +38,8 @@ def collect_data_gen(user_name: str, token: str):
 
     lang_stats = dict()
     processed_count = 0
-    left_count = len(repos)
+
+    left_count = min(len(repos), config.MAX_REPOS_TO_PROCESS if config.DEBUG else len(repos))
 
     for repo in repos:
         yield processed_count, left_count, lang_stats

@@ -65,7 +65,8 @@ class ThreadWorker(QObject):
 
             _l.debug(f'{processed}/{processed + left}')
 
-            total = max(processed + left, 1)  # use 1 to avoid division by zero
+            total = min(processed + left, config.MAX_REPOS_TO_PROCESS if config.DEBUG else processed + left)
+            total = max(total, 1)  # use 1 to avoid division by zero
             self.progress.emit(processed * 100.0 / total)
 
             if left == 0:
