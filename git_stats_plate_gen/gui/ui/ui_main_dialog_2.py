@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QDoubleSpinBox,
     QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
     QSplitter, QVBoxLayout, QWidget)
 
-from gspg.gui.preview_widget import PreviewWidget
+from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):

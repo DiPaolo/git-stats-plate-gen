@@ -4,8 +4,8 @@ from typing import Dict
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from gspg import config
-from gspg.core.data import collect_data_gen
+from git_stats_plate_gen import config
+from git_stats_plate_gen.core.data import collect_data_gen
 
 _l = logging.getLogger('gui.worker')
 

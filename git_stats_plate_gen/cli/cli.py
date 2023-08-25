@@ -2,12 +2,12 @@ import sys
 
 import click
 
-from gspg import config
-from gspg.cli.exit_codes import ExitCode
-from gspg.core import cache
-from gspg.core.common import DataType
-from gspg.core.data import collect_data
-from gspg.core.graph import plot_graph_to_file
+from git_stats_plate_gen import config
+from git_stats_plate_gen.cli.exit_codes import ExitCode
+from git_stats_plate_gen.core import cache
+from git_stats_plate_gen.core.common import DataType
+from git_stats_plate_gen.core.data import collect_data
+from git_stats_plate_gen.core.graph import plot_graph_to_file
 
 
 @click.command()

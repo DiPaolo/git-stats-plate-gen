@@ -3,10 +3,10 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QMainWindow
 
-from gspg.gui import logger
-from gspg.gui import settings
-from gspg.gui.settings import SettingsKey
-from gspg.gui.ui.ui_log_window import Ui_LogWindow
+from git_stats_plate_gen.gui import logger
+from git_stats_plate_gen.gui import settings
+from git_stats_plate_gen.gui.settings import SettingsKey
+from git_stats_plate_gen.gui.ui.ui_log_window import Ui_LogWindow
 
 
 class LogWindow(QMainWindow):

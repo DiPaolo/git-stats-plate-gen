@@ -7,8 +7,8 @@ import click
 import plotly.graph_objects as go
 import plotly.io as pio
 
-from gspg import config
-from gspg.core.common import DataType, get_data_type_name
+from git_stats_plate_gen import config
+from git_stats_plate_gen.core.common import DataType, get_data_type_name
 
 
 def map_data_type_to_text(data_type: DataType) -> str:

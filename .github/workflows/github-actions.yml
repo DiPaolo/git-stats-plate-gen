@@ -95,8 +95,8 @@ jobs:
         shell: bash
         run: |
           pip install pyinstaller
-          pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
-          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir gspg/gui/__main__.py
+          pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir git_stats_plate_gen/cli/__main__.py
+          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir git_stats_plate_gen/gui/__main__.py
 
           if [ "$RUNNER_OS" == "Linux" ]; then
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
