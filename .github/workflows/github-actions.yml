@@ -37,7 +37,7 @@ jobs:
           ruff --format=github --target-version=py37 .
 
       - name: 'Build binaries: GUI & CLI'
-#        if: github.ref == 'refs/heads/master'
+        if: github.ref_type == 'tag'
         shell: bash
         run: |
           pip install pyinstaller
@@ -92,6 +92,7 @@ jobs:
           fi
 
       - name: Upload artifacts
+        if: github.ref_type == 'tag'
         uses: actions/upload-artifact@v3
         with:
           name: git_stats_plate_gen_cli_${{matrix.os}}_b${{github.run_number}}
