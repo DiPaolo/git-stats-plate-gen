@@ -36,7 +36,7 @@ jobs:
           name: release_url
           path: release_url.txt
 
-  static-analysis:
+  analysis:
     if: !contains(github.ref, 'tags/v')
     strategy:
       matrix:
