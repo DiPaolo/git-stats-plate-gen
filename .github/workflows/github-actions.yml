@@ -7,6 +7,35 @@ on:
     tags:
       - 'v*'
 jobs:
+  create-release:
+    name: Create release
+    if: contains(github.ref, 'tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+
+      - name: Output release URL file
+        run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+
+      - name: Save release URL file for publish
+        uses: actions/upload-artifact@v1
+        with:
+          name: release_url
+          path: release_url.txt
+
   build:
     strategy:
       matrix:
@@ -93,21 +122,21 @@ jobs:
             ls -lh .
           fi
 
-      - name: Create Release
-        if: github.ref_type == 'tag'
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      - uses: actions/checkout@v1
+      - name: Load release URL file from release job
+        uses: actions/download-artifact@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
+          name: release_url
+
+      - name: Get release filename & upload URL
+        id: get_release_info
+        run: |
+          echo ::set-output name=file_name::${REPOSITORY_NAME##*/}-${TAG_REF_NAME##*/v}
+          value=`cat release_url/release_url.txt`
+          echo ::set-output name=upload_url::$value
+        env:
+          TAG_REF_NAME: ${{ github.ref }}
+          REPOSITORY_NAME: ${{ github.repository }}
 
       - name: Upload artifacts
         if: github.ref_type == 'tag'
@@ -115,7 +144,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: git_stats_plate_gen_cli.tar.gz
           asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
           asset_content_type: application/gzip
