@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }}'
+      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -95,5 +95,5 @@ jobs:
         if: github.ref_type == 'tag'
         uses: actions/upload-artifact@v3
         with:
-          name: git_stats_plate_gen_cli_${{matrix.os}}_b${{github.run_number}}
+          name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
           path: git_stats_plate_gen_cli.tar.gz
