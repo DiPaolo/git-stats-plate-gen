@@ -8,11 +8,11 @@ on:
       - 'v*'
 jobs:
   create-release:
-    name: Create release
+    name: Create release draft
     if: contains(github.ref, 'tags/v')
     runs-on: ubuntu-latest
     steps:
-      - name: Create release
+      - name: Create release draft
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -21,9 +21,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+            <Will be added>
           draft: true
           prerelease: false
 
@@ -99,52 +97,22 @@ jobs:
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
           pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir gspg/gui/__main__.py
-          ls -l dist
-          ls -l dist/git_stats_plate_gen
-          ls -l "dist/Git Stats Plate Generator"
 
           if [ "$RUNNER_OS" == "Linux" ]; then
-            echo "== DIPAOLO == Linux"
-            ls -l dist/git_stats_plate_gen/kaleido
-
-            echo "== DIPAOLO == removing kaleido executable"
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
             rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
 
-            echo "== DIPAOLO == compress"
             tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
             tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
-
-            echo "== DIPAOLO == list dist"
-            ls -lh dist
-            echo "== DIPAOLO == list cur dir"
-            ls -lh .
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            echo "== DIPAOLO == MacOS"
-
-            echo "== DIPAOLO == removing kaleido executable"
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
             rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
 
-            echo "== DIPAOLO == compress"
             tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
             tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
-
-            echo "== DIPAOLO == list dist"
-            ls -lh dist
-            echo "== DIPAOLO == list cur dir"
-            ls -lh .
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo "== DIPAOLO == Windows"
-
-            echo "== DIPAOLO == compress"
             tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
             tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
-
-            echo "== DIPAOLO == list dist"
-            ls -lh dist
-            echo "== DIPAOLO == list cur dir"
-            ls -lh .
           fi
 
       - name: Load release URL file from release job
