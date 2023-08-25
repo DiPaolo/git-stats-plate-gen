@@ -1,4 +1,4 @@
-name: Build & Package (${{ github.ref_type }})
+name: Build & Package
 on:
   push:
     branches:
@@ -17,7 +17,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}@${{ matrix.os}}
+
+      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }}'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
