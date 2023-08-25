@@ -18,7 +18,7 @@ def get_my_user_id(token: str) -> int:
 
     data = json.loads(ret.text)
     if 'id' not in data:
-        click.echo(f"Failed to get user ID from GitLab: failed to find 'ID' field in returned data", err=True)
+        click.echo("Failed to get user ID from GitLab: failed to find 'ID' field in returned data", err=True)
         return -1
 
     return data['id']
@@ -52,7 +52,7 @@ def get_namespaces(token: str) -> List[object]:
         'Authorization': f'Bearer {token}',
         # 'X-GitHub-Api-Version': '2022-11-28'
     }
-    ret = requests.get(f'https://gitlab.com/api/v4/namespaces', headers=headers)
+    ret = requests.get('https://gitlab.com/api/v4/namespaces', headers=headers)
     if not ret.ok:
         click.echo(f"Failed to get repos from GitLab: {ret.reason}", err=True)
         return list()

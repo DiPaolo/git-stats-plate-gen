@@ -26,7 +26,7 @@ def collect_data(user_name: str, token: str):
 
 def collect_data_gen(user_name: str, token: str):
     if token.startswith('github'):
-        from gspg.core.github import get_repo_langs, get_repos
+        from gspg.core.github import get_repos
     else:
         yield 0, 0, None
         # from gspg.core.gitlab import get_repo_langs, get_repos
@@ -145,7 +145,8 @@ def _calc_main(user_name: str, token: str, repo: Dict) -> Dict:
     if token.startswith('github'):
         from gspg.core.github import get_repo_langs
     else:
-        from gspg.core.gitlab import get_repo_langs
+        # from gspg.core.gitlab import get_repo_langs
+        return dict()
 
     repo_langs = get_repo_langs(user_name, token, repo['name'])
     if config.DEBUG:

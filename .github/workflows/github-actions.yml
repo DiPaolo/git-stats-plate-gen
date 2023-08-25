@@ -1,0 +1,154 @@
+name: Build & Package
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+    tags:
+      - 'v*'
+jobs:
+  create-release:
+    name: Create release draft
+    if: contains(github.ref, 'tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release draft
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            <Will be added>
+          draft: true
+          prerelease: false
+
+      - name: Output release URL file
+        run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+
+      - name: Save release URL file for publish
+        uses: actions/upload-artifact@v1
+        with:
+          name: release_url
+          path: release_url.txt
+
+  static-analysis:
+    strategy:
+      matrix:
+        os: [
+          'ubuntu-22.04',
+          'windows-2019',
+          'macos-13'
+        ]
+        python-version: ["3.11"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 'Install dependencies (${{ github.event.release.upload_url }} | ref_name: ${{ github.ref_name }} | ref: ${{ github.ref }})'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with ruff
+        run: |
+          pip install ruff
+          # stop the build if there are Python syntax errors or undefined names
+          ruff --format=github --select=E9,F63,F7,F82 --target-version=py311 .
+          # default set of ruff rules with GitHub Annotations
+          ruff --format=github --target-version=py37 .
+
+  build-n-upload:
+    if: contains(github.ref, 'tags/v')
+    needs: [create-release, static-analysis]
+    strategy:
+      matrix:
+        os: [
+          'ubuntu-22.04',
+          'windows-2019',
+          'macos-13'
+        ]
+        python-version: ["3.11"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 'Install dependencies (${{ github.event.release.upload_url }} | ref_name: ${{ github.ref_name }} | ref: ${{ github.ref }})'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 'Build binaries: GUI & CLI'
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          pip install pyinstaller
+          pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir gspg/cli/__main__.py
+          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir gspg/gui/__main__.py
+
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
+            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
+
+            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
+            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
+
+            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+          fi
+
+      - name: Load release URL file from release job
+        uses: actions/download-artifact@v1
+        with:
+          name: release_url
+
+      - name: Get release filename & upload URL
+        id: get_release_info
+        shell: bash
+        run: |
+          echo ::set-output name=file_name::${REPOSITORY_NAME##*/}-${TAG_REF_NAME##*/v}
+          value=`cat release_url/release_url.txt`
+          echo ::set-output name=upload_url::$value
+        env:
+          TAG_REF_NAME: ${{ github.ref }}
+          REPOSITORY_NAME: ${{ github.repository }}
+
+      - name: 'Upload artifacts: CLI'
+        if: github.ref_type == 'tag'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: git_stats_plate_gen_cli.tar.gz
+          asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
+          asset_content_type: application/gzip
+
+      - name: 'Upload artifacts: GUI'
+        if: github.ref_type == 'tag'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: git_stats_plate_gen_gui.tar.gz
+          asset_name: git_stats_plate_gen_gui_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
+          asset_content_type: application/gzip

@@ -1,6 +1,5 @@
 import datetime
 import getpass
-import pprint
 
 from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread
