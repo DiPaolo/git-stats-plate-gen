@@ -2,6 +2,7 @@ name: Build & Package
 on:
   push:
     branches:
+      - '*'
       - '!main'
 jobs:
   build:
