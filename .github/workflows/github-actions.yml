@@ -36,7 +36,8 @@ jobs:
           name: release_url
           path: release_url.txt
 
-  build:
+  static-analysis:
+    if: !contains(github.ref, 'tags/v')
     strategy:
       matrix:
         os: [
@@ -67,6 +68,18 @@ jobs:
           # default set of ruff rules with GitHub Annotations
           ruff --format=github --target-version=py37 .
 
+  build-n-upload:
+    if: contains(github.ref, 'tags/v')
+    strategy:
+      matrix:
+        os: [
+          'ubuntu-22.04',
+          'windows-2019',
+          'macos-13'
+        ]
+        python-version: ["3.11"]
+    runs-on: ${{ matrix.os }}
+    steps:
       - name: 'Build binaries: GUI & CLI'
         if: github.ref_type == 'tag'
         shell: bash
