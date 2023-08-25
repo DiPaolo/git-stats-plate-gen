@@ -163,7 +163,7 @@ jobs:
           TAG_REF_NAME: ${{ github.ref }}
           REPOSITORY_NAME: ${{ github.repository }}
 
-      - name: Upload artifacts
+      - name: 'Upload artifacts: CLI'
         if: github.ref_type == 'tag'
         uses: actions/upload-release-asset@v1
         env:
@@ -172,4 +172,15 @@ jobs:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: git_stats_plate_gen_cli.tar.gz
           asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
+          asset_content_type: application/gzip
+
+      - name: 'Upload artifacts: GUI'
+        if: github.ref_type == 'tag'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: git_stats_plate_gen_gui.tar.gz
+          asset_name: git_stats_plate_gen_gui_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
           asset_content_type: application/gzip
