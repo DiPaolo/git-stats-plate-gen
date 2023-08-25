@@ -69,7 +69,7 @@ jobs:
 
   build-n-upload:
     if: contains(github.ref, 'tags/v')
-    needs: [create-release]
+    needs: [create-release, static-analysis]
     strategy:
       matrix:
         os: [
