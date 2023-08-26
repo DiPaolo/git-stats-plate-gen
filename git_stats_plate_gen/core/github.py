@@ -59,7 +59,6 @@ def calc_lines_local_repo(repo_dir: str) -> Dict:
     cmdline = ['cloc', '.', '--json']
     result = subprocess.run(cmdline, cwd=repo_dir, capture_output=True, universal_newlines=True, timeout=5 * 60)
 
-
     if config.DEBUG:
         print(f"=== ret code = {result.returncode} ===\n"
               f"   stdout: \n{result.stdout}\n\n"

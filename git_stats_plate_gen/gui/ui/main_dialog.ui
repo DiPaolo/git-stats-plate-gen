@@ -133,7 +133,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0,0">
        <item>
         <widget class="PreviewWidget" name="preview" native="true"/>
        </item>
@@ -148,30 +148,6 @@
          </item>
          <item>
           <widget class="QLineEdit" name="output_base_name"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QCheckBox" name="use_cache">
-           <property name="text">
-            <string>Use Cached Data if Possible</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </item>

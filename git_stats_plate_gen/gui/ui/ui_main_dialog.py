@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QDoubleSpinBox,
-    QGridLayout, QHBoxLayout, QLabel, QLineEdit,
-    QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
-    QSplitter, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QDialog, QDoubleSpinBox, QGridLayout,
+    QHBoxLayout, QLabel, QLineEdit, QProgressBar,
+    QPushButton, QSizePolicy, QSpacerItem, QSplitter,
+    QVBoxLayout, QWidget)
 
 from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
@@ -133,20 +133,6 @@ class Ui_Dialog(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.use_cache = QCheckBox(self.layoutWidget1)
-        self.use_cache.setObjectName(u"use_cache")
-
-        self.horizontalLayout_4.addWidget(self.use_cache)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_4.addItem(self.horizontalSpacer)
-
-
-        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
-
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.label_3 = QLabel(self.layoutWidget1)
@@ -186,7 +172,6 @@ class Ui_Dialog(object):
         self.progress_bar.setFormat(QCoreApplication.translate("Dialog", u"%v/%m (%p%)", None))
         self.debug.setText("")
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Image Base Name:", None))
-        self.use_cache.setText(QCoreApplication.translate("Dialog", u"Use Cached Data if Possible", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent:", None))
     # retranslateUi
 
