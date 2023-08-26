@@ -94,7 +94,7 @@ class Ui_Dialog(object):
 
         self.progress_bar = QProgressBar(self.layoutWidget)
         self.progress_bar.setObjectName(u"progress_bar")
-        self.progress_bar.setValue(3)
+        self.progress_bar.setValue(0)
 
         self.verticalLayout.addWidget(self.progress_bar)
 
