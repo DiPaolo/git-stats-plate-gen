@@ -50,6 +50,9 @@ class MainDialog(QDialog):
         # connections
         #
 
+        self.started.connect(self._update_cur_stats_status)
+        self.finished.connect(self._update_cur_stats_status)
+
         # # log window
         # self.ui.show_log_window.toggled.connect(lambda checked: self.log_window.setVisible(checked))
         # self.ui.show_log_window.setChecked(True)
@@ -104,15 +107,14 @@ class MainDialog(QDialog):
     def _start(self):
         self._stop()
 
-        logger.info('Start gathering statistics...')
+        logger.info('Start collecting statistics...')
+
+        self._stats = None
 
         self._set_all_controls_enabled(False)
+        self._update_cur_stats_status()
         self.started_time = datetime.datetime.now()
         self.started.emit()
-
-        # if self._stats is None:
-        #     self._stats = collect_data(self.ui.username.text(), self.ui.token.text())
-        #     self._update_cur_stats_status()
 
         self.ui.start_stop.setText('Cancel')
         self.ui.start_stop.clicked.disconnect()
@@ -133,17 +135,19 @@ class MainDialog(QDialog):
         self._timer.timeout.connect(self._update_cur_stats_info)
         self._timer.start(1000)
 
-        logger.info('Gathering started')
+        logger.info('Collect started')
 
     @Slot()
     def _stop(self):
-        logger.info('Stopping gathering statistics...')
+        logger.info('Stopping collecting statistics...')
 
         if self._timer:
             self._timer.stop()
             self._timer = None
 
         if self._worker:
+            self._stats = self._worker.cur_stats
+            self._update_cur_stats_info()
             self._worker.stop()
             self._worker = None
 
@@ -154,13 +158,14 @@ class MainDialog(QDialog):
 
         self.started_time = None
         self._set_all_controls_enabled(True)
+        self._update_cur_stats_status()
         self.stopped.emit()
 
-        self.ui.start_stop.setText('Gather Statistics')
+        self.ui.start_stop.setText('Collect Statistics')
         self.ui.start_stop.clicked.disconnect()
         self.ui.start_stop.clicked.connect(self._start)
 
-        logger.info('Gathering stopped')
+        logger.info('Collecting stopped')
 
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [

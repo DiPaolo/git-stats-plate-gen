@@ -26,7 +26,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(1333, 607)
+        Dialog.resize(976, 551)
         self.gridLayout = QGridLayout(Dialog)
         self.gridLayout.setObjectName(u"gridLayout")
         self.splitter = QSplitter(Dialog)
@@ -94,7 +94,7 @@ class Ui_Dialog(object):
 
         self.progress_bar = QProgressBar(self.layoutWidget)
         self.progress_bar.setObjectName(u"progress_bar")
-        self.progress_bar.setValue(0)
+        self.progress_bar.setValue(3)
 
         self.verticalLayout.addWidget(self.progress_bar)
 
@@ -182,7 +182,7 @@ class Ui_Dialog(object):
         self.label.setText(QCoreApplication.translate("Dialog", u"GitHub User Name:", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
         self.stats_status.setText(QCoreApplication.translate("Dialog", u"<statistics status>", None))
-        self.start_stop.setText(QCoreApplication.translate("Dialog", u"Gather Statistics", None))
+        self.start_stop.setText(QCoreApplication.translate("Dialog", u"Collect Statistics", None))
         self.progress_bar.setFormat(QCoreApplication.translate("Dialog", u"%v/%m (%p%)", None))
         self.debug.setText("")
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Image Base Name:", None))

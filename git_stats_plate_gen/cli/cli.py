@@ -39,7 +39,7 @@ def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_perce
     if use_cache:
         stats = cache.load_stats()
         if stats is None:
-            click.echo("WARNING: failed to load cache. Will try to gather data from remote...")
+            click.echo("WARNING: failed to load cache. Will try to collect data from remote...")
 
     if stats is None:
         if user is None:

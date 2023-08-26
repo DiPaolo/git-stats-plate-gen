@@ -1,5 +1,5 @@
 DEBUG = True
-MAX_REPOS_TO_PROCESS = 12 if DEBUG else 2 ** 32  # applied in DEBUG only
+MAX_REPOS_TO_PROCESS = 5 if DEBUG else 2 ** 32  # applied in DEBUG only
 
 ORGANIZATION_NAME = "DiPaolo"
 ORGANIZATION_DOMAIN = 'dipaolo.dev'
