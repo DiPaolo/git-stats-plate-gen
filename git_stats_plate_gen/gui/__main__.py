@@ -4,9 +4,9 @@ import sys
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import QApplication
 
-from gspg import config
-# from gspg.app import init_app, deinit_app
-from gspg.gui.main_dialog import MainDialog
+from git_stats_plate_gen import config
+# from git_stats_plate_gen.app import init_app, deinit_app
+from git_stats_plate_gen.gui.main_dialog import MainDialog
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 

@@ -2,7 +2,7 @@ import datetime
 
 from PySide6.QtWidgets import QTableWidgetItem
 
-from gspg import config
+from git_stats_plate_gen import config
 
 _log_widget = None
 

@@ -3,8 +3,8 @@ import pprint
 import tempfile
 from typing import Dict, Optional
 
-from gspg import config
-from gspg.core.github import clone_repo, calc_lines_local_repo
+from git_stats_plate_gen import config
+from git_stats_plate_gen.core.github import clone_repo, calc_lines_local_repo
 
 
 class RetCode(enum.Enum):
@@ -20,16 +20,13 @@ def collect_data(user_name: str, token: str):
         if left == 0:
             return stats
 
-        if config.DEBUG and processed >= config.MAX_REPOS_TO_PROCESS:
-            return stats
-
 
 def collect_data_gen(user_name: str, token: str):
     if token.startswith('github'):
-        from gspg.core.github import get_repos
+        from git_stats_plate_gen.core.github import get_repos
     else:
         yield 0, 0, None
-        # from gspg.core.gitlab import get_repo_langs, get_repos
+        # from git_stats_plate_gen.core.gitlab import get_repo_langs, get_repos
 
     repos = get_repos(token)
 
@@ -41,7 +38,8 @@ def collect_data_gen(user_name: str, token: str):
 
     lang_stats = dict()
     processed_count = 0
-    left_count = len(repos)
+
+    left_count = min(len(repos), config.MAX_REPOS_TO_PROCESS if config.DEBUG else len(repos))
 
     for repo in repos:
         yield processed_count, left_count, lang_stats
@@ -143,9 +141,9 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
 
 def _calc_main(user_name: str, token: str, repo: Dict) -> Dict:
     if token.startswith('github'):
-        from gspg.core.github import get_repo_langs
+        from git_stats_plate_gen.core.github import get_repo_langs
     else:
-        # from gspg.core.gitlab import get_repo_langs
+        # from git_stats_plate_gen.core.gitlab import get_repo_langs
         return dict()
 
     repo_langs = get_repo_langs(user_name, token, repo['name'])

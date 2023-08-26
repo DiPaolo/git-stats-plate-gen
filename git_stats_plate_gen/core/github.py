@@ -6,7 +6,7 @@ from typing import List, Dict
 import click
 import requests
 
-from gspg import config
+from git_stats_plate_gen import config
 
 
 def get_repos(token: str) -> List[Dict]:

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1333</width>
-    <height>607</height>
+    <width>976</width>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -94,7 +94,7 @@
          <item>
           <widget class="QPushButton" name="start_stop">
            <property name="text">
-            <string>Gather Statistics</string>
+            <string>Collect Statistics</string>
            </property>
           </widget>
          </item>
@@ -103,7 +103,7 @@
        <item>
         <widget class="QProgressBar" name="progress_bar">
          <property name="value">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="format">
           <string extracomment="Repos">%v/%m (%p%)</string>
@@ -212,7 +212,7 @@
   <customwidget>
    <class>PreviewWidget</class>
    <extends>QWidget</extends>
-   <header>gh_repo_stats.gui.preview_widget</header>
+   <header>git_stats_plate_gen.gui.preview_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

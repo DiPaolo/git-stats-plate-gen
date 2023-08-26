@@ -5,11 +5,6 @@ _CACHE_FILENAME = '.stats_cache.dat'
 _CUR_VERSION = 1
 
 
-def dump_stats(stats: Dict):
-    with open(_CACHE_FILENAME, 'wb') as f:
-        pickle.dump({'version': _CUR_VERSION, 'stats': stats}, f)
-
-
 def load_stats() -> Optional[Dict]:
     """
 
@@ -35,3 +30,8 @@ def load_stats() -> Optional[Dict]:
             return data['stats']
     except FileNotFoundError:
         return None
+
+
+def save_stats(stats: Dict):
+    with open(_CACHE_FILENAME, 'wb') as f:
+        pickle.dump({'version': _CUR_VERSION, 'stats': stats}, f)

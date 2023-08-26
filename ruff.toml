@@ -11,7 +11,7 @@ unfixable = []
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
-    "gspg/gui/ui/*.py",
+    "git_stats_plate_gen/gui/ui/*.py",
     ".bzr",
     ".direnv",
     ".eggs",

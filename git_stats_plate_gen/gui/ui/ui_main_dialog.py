@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_dialog_2.ui'
+## Form generated from reading UI file 'main_dialog.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.5.2
 ##
@@ -20,13 +20,13 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QDoubleSpinBox,
     QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
     QSplitter, QVBoxLayout, QWidget)
 
-from gspg.gui.preview_widget import PreviewWidget
+from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(1333, 607)
+        Dialog.resize(976, 551)
         self.gridLayout = QGridLayout(Dialog)
         self.gridLayout.setObjectName(u"gridLayout")
         self.splitter = QSplitter(Dialog)
@@ -182,7 +182,7 @@ class Ui_Dialog(object):
         self.label.setText(QCoreApplication.translate("Dialog", u"GitHub User Name:", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
         self.stats_status.setText(QCoreApplication.translate("Dialog", u"<statistics status>", None))
-        self.start_stop.setText(QCoreApplication.translate("Dialog", u"Gather Statistics", None))
+        self.start_stop.setText(QCoreApplication.translate("Dialog", u"Collect Statistics", None))
         self.progress_bar.setFormat(QCoreApplication.translate("Dialog", u"%v/%m (%p%)", None))
         self.debug.setText("")
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Image Base Name:", None))

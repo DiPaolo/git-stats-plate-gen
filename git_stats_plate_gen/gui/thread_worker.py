@@ -4,8 +4,8 @@ from typing import Dict
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from gspg import config
-from gspg.core.data import collect_data_gen
+from git_stats_plate_gen import config
+from git_stats_plate_gen.core.data import collect_data_gen
 
 _l = logging.getLogger('gui.worker')
 
@@ -65,7 +65,8 @@ class ThreadWorker(QObject):
 
             _l.debug(f'{processed}/{processed + left}')
 
-            total = max(processed + left, 1)  # use 1 to avoid division by zero
+            total = min(processed + left, config.MAX_REPOS_TO_PROCESS if config.DEBUG else processed + left)
+            total = max(total, 1)  # use 1 to avoid division by zero
             self.progress.emit(processed * 100.0 / total)
 
             if left == 0:

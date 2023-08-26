@@ -5,15 +5,15 @@ from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread
 from PySide6.QtWidgets import QDialog
 
-from gspg import config
-from gspg.core.cache import load_stats
-from gspg.core.common import DataType, get_data_type_name
-from gspg.core.graph import plot_graph_to_buffer
-from gspg.gui import logger, settings
-from gspg.gui.log_window import LogWindow
-from gspg.gui.settings import SettingsKey
-from gspg.gui.thread_worker import ThreadWorker
-from gspg.gui.ui.ui_main_dialog_2 import Ui_Dialog
+from git_stats_plate_gen import config
+from git_stats_plate_gen.core.cache import load_stats
+from git_stats_plate_gen.core.common import DataType, get_data_type_name
+from git_stats_plate_gen.core.graph import plot_graph_to_buffer
+from git_stats_plate_gen.gui import logger, settings
+from git_stats_plate_gen.gui.log_window import LogWindow
+from git_stats_plate_gen.gui.settings import SettingsKey
+from git_stats_plate_gen.gui.thread_worker import ThreadWorker
+from git_stats_plate_gen.gui.ui.ui_main_dialog import Ui_Dialog
 
 
 class MainDialog(QDialog):
@@ -45,6 +45,7 @@ class MainDialog(QDialog):
 
         self._stats = load_stats()
         self._update_cur_stats_status()
+        self._replot_graph()
 
         #
         # connections
@@ -54,27 +55,29 @@ class MainDialog(QDialog):
         # self.ui.show_log_window.toggled.connect(lambda checked: self.log_window.setVisible(checked))
         # self.ui.show_log_window.setChecked(True)
 
-        self.ui.splitter.splitterMoved.connect(lambda x: self._replot())
+        self.ui.splitter.splitterMoved.connect(lambda x: self._replot_graph())
 
         [elem.textChanged.connect(self._update_start_stop_status) for elem in [
             self.ui.username, self.ui.token, self.ui.output_base_name
         ]]
 
-        self.ui.min_percent.valueChanged.connect(self._replot)
+        self.ui.min_percent.valueChanged.connect(self._replot_graph)
 
         # start/stop + exit
-        self.ui.start_stop.clicked.connect(self._start)
+        self.ui.start_stop.clicked.connect(self._start_collect)
 
         # after connections!
         self._init_controls()
 
         # change preview size to new size
-        QTimer.singleShot(0, lambda: self._replot())
+        QTimer.singleShot(0, lambda: self._replot_graph())
+
+        self.ui.token.setFocus()
 
     def closeEvent(self, event):
         logger.info('Exiting application...')
 
-        self._stop()
+        self._cancel_collect()
 
         # save window position and size
         settings.set_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY, self.saveGeometry())
@@ -84,7 +87,7 @@ class MainDialog(QDialog):
         event.accept()
 
     def resizeEvent(self, event):
-        self._replot()
+        self._replot_graph()
         event.accept()
 
     def _init_controls(self):
@@ -101,28 +104,29 @@ class MainDialog(QDialog):
         self.ui.start_stop.setEnabled(len(filled_elem_count) == len(elems))
 
     @Slot()
-    def _start(self):
-        self._stop()
+    def _start_collect(self):
+        self._cancel_collect()
 
-        logger.info('Start gathering statistics...')
+        logger.info('Start collecting statistics...')
+
+        self._stats = None
 
         self._set_all_controls_enabled(False)
+        self._update_cur_stats_status()
+        self._replot_graph()
+
         self.started_time = datetime.datetime.now()
         self.started.emit()
 
-        # if self._stats is None:
-        #     self._stats = collect_data(self.ui.username.text(), self.ui.token.text())
-        #     self._update_cur_stats_status()
-
         self.ui.start_stop.setText('Cancel')
         self.ui.start_stop.clicked.disconnect()
-        self.ui.start_stop.clicked.connect(self._stop)
+        self.ui.start_stop.clicked.connect(self._cancel_collect)
 
         self._thread = QThread()
         self._worker = ThreadWorker(self.ui.username.text(), self.ui.token.text())
         self._worker.moveToThread(self._thread)
         self._worker.started.connect(self.started)
-        self._worker.finished.connect(self._stop)
+        self._worker.finished.connect(self._stop_collect)
 
         self._thread.started.connect(self._worker.run)
         self._worker.progress.connect(self.ui.progress_bar.setValue)
@@ -133,19 +137,31 @@ class MainDialog(QDialog):
         self._timer.timeout.connect(self._update_cur_stats_info)
         self._timer.start(1000)
 
-        logger.info('Gathering started')
+        logger.info('Collect started')
 
     @Slot()
-    def _stop(self):
-        logger.info('Stopping gathering statistics...')
+    def _cancel_collect(self):
+        self._stop_collect(False)
+
+    @Slot()
+    def _stop_collect(self, done: bool = True):
+        """
+
+        :param done: done/finished if True; canceled if False
+        :return:
+        """
+
+        logger.info(f"{'Finishing' if done else 'Stopping'} collecting statistics...")
 
         if self._timer:
             self._timer.stop()
             self._timer = None
 
         if self._worker:
+            self._stats = self._worker.cur_stats
+            self._update_cur_stats_info()
             self._worker.stop()
-            self._worker = None
+            # self._worker = None
 
         if self._thread:
             self._thread.quit()
@@ -154,23 +170,25 @@ class MainDialog(QDialog):
 
         self.started_time = None
         self._set_all_controls_enabled(True)
+        self._update_cur_stats_status()
+        self._replot_graph()
         self.stopped.emit()
 
-        self.ui.start_stop.setText('Gather Statistics')
+        self.ui.start_stop.setText('Collect Statistics')
         self.ui.start_stop.clicked.disconnect()
-        self.ui.start_stop.clicked.connect(self._start)
+        self.ui.start_stop.clicked.connect(self._start_collect)
 
-        logger.info('Gathering stopped')
+        logger.info(f"Collecting {'done' if done else 'canceled'}")
 
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [
             self.ui.username, self.ui.token, self.ui.output_base_name, self.ui.use_cache, self.ui.min_percent
         ]]
 
-        # self.ui.start_stop.setEnabled(enabled)
-
-    def _replot(self):
+    def _replot_graph(self):
         if not self._is_data_ready():
+            # clear the image
+            self.ui.preview.set_data(None)
             return
 
         size = self.ui.preview.size()
@@ -188,6 +206,9 @@ class MainDialog(QDialog):
             self.ui.stats_status.setText('<p style="color:tomato;">Statistics Not Ready</p')
 
     def _update_cur_stats_info(self):
+        if not self._worker:
+            return
+
         cur_stats = self._worker.cur_stats
 
         param_name = get_data_type_name(DataType.LINES)

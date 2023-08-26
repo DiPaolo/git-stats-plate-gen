@@ -2,12 +2,12 @@ import sys
 
 import click
 
-from gspg import config
-from gspg.cli.exit_codes import ExitCode
-from gspg.core import cache
-from gspg.core.common import DataType
-from gspg.core.data import collect_data
-from gspg.core.graph import plot_graph_to_file
+from git_stats_plate_gen import config
+from git_stats_plate_gen.cli.exit_codes import ExitCode
+from git_stats_plate_gen.core import cache
+from git_stats_plate_gen.core.common import DataType
+from git_stats_plate_gen.core.data import collect_data
+from git_stats_plate_gen.core.graph import plot_graph_to_file
 
 
 @click.command()
@@ -39,7 +39,7 @@ def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_perce
     if use_cache:
         stats = cache.load_stats()
         if stats is None:
-            click.echo("WARNING: failed to load cache. Will try to gather data from remote...")
+            click.echo("WARNING: failed to load cache. Will try to collect data from remote...")
 
     if stats is None:
         if user is None:
@@ -57,7 +57,7 @@ def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_perce
 
         stats = collect_data(user, token)
         if stats is not None:
-            cache.dump_stats(stats)
+            cache.save_stats(stats)
 
     if stats is None:
         sys.exit(ExitCode.FAILED_COLLECT_STATS.value)
