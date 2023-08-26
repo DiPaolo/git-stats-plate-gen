@@ -34,6 +34,7 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
         self.label.setFrameShape(QFrame.StyledPanel)
+        self.label.setAlignment(Qt.AlignCenter)
 
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
 

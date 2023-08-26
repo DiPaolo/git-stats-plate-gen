@@ -187,6 +187,8 @@ class MainDialog(QDialog):
 
     def _replot_graph(self):
         if not self._is_data_ready():
+            # clear the image
+            self.ui.preview.set_data(None)
             return
 
         size = self.ui.preview.size()
