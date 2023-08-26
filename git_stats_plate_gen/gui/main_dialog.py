@@ -45,6 +45,7 @@ class MainDialog(QDialog):
 
         self._stats = load_stats()
         self._update_cur_stats_status()
+        self._replot_graph()
 
         #
         # connections
@@ -54,13 +55,13 @@ class MainDialog(QDialog):
         # self.ui.show_log_window.toggled.connect(lambda checked: self.log_window.setVisible(checked))
         # self.ui.show_log_window.setChecked(True)
 
-        self.ui.splitter.splitterMoved.connect(lambda x: self._replot())
+        self.ui.splitter.splitterMoved.connect(lambda x: self._replot_graph())
 
         [elem.textChanged.connect(self._update_start_stop_status) for elem in [
             self.ui.username, self.ui.token, self.ui.output_base_name
         ]]
 
-        self.ui.min_percent.valueChanged.connect(self._replot)
+        self.ui.min_percent.valueChanged.connect(self._replot_graph)
 
         # start/stop + exit
         self.ui.start_stop.clicked.connect(self._start)
@@ -69,7 +70,7 @@ class MainDialog(QDialog):
         self._init_controls()
 
         # change preview size to new size
-        QTimer.singleShot(0, lambda: self._replot())
+        QTimer.singleShot(0, lambda: self._replot_graph())
 
     def closeEvent(self, event):
         logger.info('Exiting application...')
@@ -84,7 +85,7 @@ class MainDialog(QDialog):
         event.accept()
 
     def resizeEvent(self, event):
-        self._replot()
+        self._replot_graph()
         event.accept()
 
     def _init_controls(self):
@@ -110,6 +111,8 @@ class MainDialog(QDialog):
 
         self._set_all_controls_enabled(False)
         self._update_cur_stats_status()
+        self._replot_graph()
+
         self.started_time = datetime.datetime.now()
         self.started.emit()
 
@@ -156,6 +159,7 @@ class MainDialog(QDialog):
         self.started_time = None
         self._set_all_controls_enabled(True)
         self._update_cur_stats_status()
+        self._replot_graph()
         self.stopped.emit()
 
         self.ui.start_stop.setText('Collect Statistics')
@@ -169,7 +173,7 @@ class MainDialog(QDialog):
             self.ui.username, self.ui.token, self.ui.output_base_name, self.ui.use_cache, self.ui.min_percent
         ]]
 
-    def _replot(self):
+    def _replot_graph(self):
         if not self._is_data_ready():
             return
 
