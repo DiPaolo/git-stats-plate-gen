@@ -6,7 +6,7 @@ from PySide6.QtCore import Slot, Signal, QTimer, QThread
 from PySide6.QtWidgets import QDialog
 
 from git_stats_plate_gen import config
-from git_stats_plate_gen.core.cache import load_stats
+from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import DataType, get_data_type_name
 from git_stats_plate_gen.core.graph import plot_graph_to_buffer
 from git_stats_plate_gen.gui import logger, settings
@@ -43,7 +43,7 @@ class MainDialog(QDialog):
         self.restoreGeometry(settings.get_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY))
         self.ui.splitter.restoreState(settings.get_settings_byte_array_value(SettingsKey.SPLITTER_STATE))
 
-        self._stats = load_stats()
+        self._stats_datetime_utc, self._stats = cache.load_stats()
         self._update_cur_stats_status()
         self._replot_graph()
 
@@ -94,7 +94,6 @@ class MainDialog(QDialog):
         self.ui.username.setText(settings.get_settings_str_value(SettingsKey.USERNAME, getpass.getuser()))
         self.ui.output_base_name.setText(settings.get_settings_str_value(SettingsKey.OUT_IMAGE_BASE_NAME,
                                                                          config.DEFAULT_OUT_IMAGE_BASE_NAME))
-        self.ui.use_cache.setChecked(settings.get_settings_bool_value(SettingsKey.USE_CACHE, config.DEFAULT_USE_CACHE))
         self.ui.min_percent.setValue(
             settings.get_settings_float_value(SettingsKey.MIN_PERCENT, config.DEFAULT_MIN_PERCENT))
 
@@ -159,6 +158,8 @@ class MainDialog(QDialog):
 
         if self._worker:
             self._stats = self._worker.cur_stats
+            self._stats_datetime_utc = datetime.datetime.utcnow()
+            cache.save_stats(self._stats_datetime_utc, self._stats)
             self._update_cur_stats_info()
             self._worker.stop()
             # self._worker = None
@@ -182,7 +183,7 @@ class MainDialog(QDialog):
 
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [
-            self.ui.username, self.ui.token, self.ui.output_base_name, self.ui.use_cache, self.ui.min_percent
+            self.ui.username, self.ui.token, self.ui.output_base_name, self.ui.min_percent
         ]]
 
     def _replot_graph(self):
@@ -197,11 +198,13 @@ class MainDialog(QDialog):
         self.ui.preview.set_data(plot_data)
 
     def _is_data_ready(self) -> bool:
-        return self._stats is not None
+        return self._stats and self._stats_datetime_utc
 
     def _update_cur_stats_status(self):
         if self._is_data_ready():
-            self.ui.stats_status.setText('<p style="color:green;">Statistics Ready</p')
+            local_datetime = utils.convert_datetime_utc_to_local(self._stats_datetime_utc)
+            gen_datetime_str = local_datetime.strftime('%Y-%m-%d, %H:%M:%S')
+            self.ui.stats_status.setText(f'<p style="color:green;">Statistics Ready (gen. {gen_datetime_str})</p')
         else:
             self.ui.stats_status.setText('<p style="color:tomato;">Statistics Not Ready</p')
 

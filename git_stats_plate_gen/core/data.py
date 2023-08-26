@@ -22,13 +22,14 @@ def collect_data(user_name: str, token: str):
 
 
 def collect_data_gen(user_name: str, token: str):
+    repos = []
+
     if token.startswith('github'):
         from git_stats_plate_gen.core.github import get_repos
+        repos = get_repos(token)
     else:
         yield 0, 0, None
         # from git_stats_plate_gen.core.gitlab import get_repo_langs, get_repos
-
-    repos = get_repos(token)
 
     if config.DEBUG:
         print(f'Total {len(repos)} repos')

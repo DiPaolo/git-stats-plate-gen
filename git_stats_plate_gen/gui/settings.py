@@ -13,7 +13,6 @@ class SettingsKey(Enum):
     LOG_WINDOW_GEOMETRY = 'logWindowGeometry'
 
     USERNAME = 'username'
-    USE_CACHE = 'useCache'
     OUT_IMAGE_BASE_NAME = 'outImageBaseName'
     MIN_PERCENT = 'minPercent'
 
