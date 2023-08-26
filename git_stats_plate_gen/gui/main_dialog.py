@@ -50,9 +50,6 @@ class MainDialog(QDialog):
         # connections
         #
 
-        self.started.connect(self._update_cur_stats_status)
-        self.finished.connect(self._update_cur_stats_status)
-
         # # log window
         # self.ui.show_log_window.toggled.connect(lambda checked: self.log_window.setVisible(checked))
         # self.ui.show_log_window.setChecked(True)
@@ -171,8 +168,6 @@ class MainDialog(QDialog):
         [elem.setEnabled(enabled) for elem in [
             self.ui.username, self.ui.token, self.ui.output_base_name, self.ui.use_cache, self.ui.min_percent
         ]]
-
-        # self.ui.start_stop.setEnabled(enabled)
 
     def _replot(self):
         if not self._is_data_ready():
