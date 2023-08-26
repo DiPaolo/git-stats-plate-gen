@@ -72,6 +72,8 @@ class MainDialog(QDialog):
         # change preview size to new size
         QTimer.singleShot(0, lambda: self._replot_graph())
 
+        self.ui.token.setFocus()
+
     def closeEvent(self, event):
         logger.info('Exiting application...')
 
