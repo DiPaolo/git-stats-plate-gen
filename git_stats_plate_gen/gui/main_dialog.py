@@ -13,7 +13,7 @@ from git_stats_plate_gen.gui import logger, settings
 from git_stats_plate_gen.gui.log_window import LogWindow
 from git_stats_plate_gen.gui.settings import SettingsKey
 from git_stats_plate_gen.gui.thread_worker import ThreadWorker
-from git_stats_plate_gen.gui.ui.ui_main_dialog_2 import Ui_Dialog
+from git_stats_plate_gen.gui.ui.ui_main_dialog import Ui_Dialog
 
 
 class MainDialog(QDialog):
