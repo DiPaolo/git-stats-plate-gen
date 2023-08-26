@@ -64,7 +64,7 @@ class MainDialog(QDialog):
         self.ui.min_percent.valueChanged.connect(self._replot_graph)
 
         # start/stop + exit
-        self.ui.start_stop.clicked.connect(self._start)
+        self.ui.start_stop.clicked.connect(self._start_collect)
 
         # after connections!
         self._init_controls()
@@ -75,7 +75,7 @@ class MainDialog(QDialog):
     def closeEvent(self, event):
         logger.info('Exiting application...')
 
-        self._stop()
+        self._cancel_collect()
 
         # save window position and size
         settings.set_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY, self.saveGeometry())
@@ -102,8 +102,8 @@ class MainDialog(QDialog):
         self.ui.start_stop.setEnabled(len(filled_elem_count) == len(elems))
 
     @Slot()
-    def _start(self):
-        self._stop()
+    def _start_collect(self):
+        self._cancel_collect()
 
         logger.info('Start collecting statistics...')
 
@@ -118,13 +118,13 @@ class MainDialog(QDialog):
 
         self.ui.start_stop.setText('Cancel')
         self.ui.start_stop.clicked.disconnect()
-        self.ui.start_stop.clicked.connect(self._stop)
+        self.ui.start_stop.clicked.connect(self._cancel_collect)
 
         self._thread = QThread()
         self._worker = ThreadWorker(self.ui.username.text(), self.ui.token.text())
         self._worker.moveToThread(self._thread)
         self._worker.started.connect(self.started)
-        self._worker.finished.connect(self._stop)
+        self._worker.finished.connect(self._stop_collect)
 
         self._thread.started.connect(self._worker.run)
         self._worker.progress.connect(self.ui.progress_bar.setValue)
@@ -138,8 +138,18 @@ class MainDialog(QDialog):
         logger.info('Collect started')
 
     @Slot()
-    def _stop(self):
-        logger.info('Stopping collecting statistics...')
+    def _cancel_collect(self):
+        self._stop_collect(False)
+
+    @Slot()
+    def _stop_collect(self, done: bool = True):
+        """
+
+        :param done: done/finished if True; canceled if False
+        :return:
+        """
+
+        logger.info(f"{'Finishing' if done else 'Stopping'} collecting statistics...")
 
         if self._timer:
             self._timer.stop()
@@ -149,7 +159,7 @@ class MainDialog(QDialog):
             self._stats = self._worker.cur_stats
             self._update_cur_stats_info()
             self._worker.stop()
-            self._worker = None
+            # self._worker = None
 
         if self._thread:
             self._thread.quit()
@@ -164,9 +174,9 @@ class MainDialog(QDialog):
 
         self.ui.start_stop.setText('Collect Statistics')
         self.ui.start_stop.clicked.disconnect()
-        self.ui.start_stop.clicked.connect(self._start)
+        self.ui.start_stop.clicked.connect(self._start_collect)
 
-        logger.info('Collecting stopped')
+        logger.info(f"Collecting {'done' if done else 'canceled'}")
 
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [
@@ -192,6 +202,10 @@ class MainDialog(QDialog):
             self.ui.stats_status.setText('<p style="color:tomato;">Statistics Not Ready</p')
 
     def _update_cur_stats_info(self):
+        if not self._worker:
+            logger.debug(f'_update_cur_stats_info() DONE')
+            return
+
         cur_stats = self._worker.cur_stats
 
         param_name = get_data_type_name(DataType.LINES)
