@@ -57,7 +57,7 @@ def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_perce
 
         stats = collect_data(user, token)
         if stats is not None:
-            cache.dump_stats(stats)
+            cache.save_stats(stats)
 
     if stats is None:
         sys.exit(ExitCode.FAILED_COLLECT_STATS.value)
