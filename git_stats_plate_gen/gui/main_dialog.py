@@ -207,7 +207,6 @@ class MainDialog(QDialog):
 
     def _update_cur_stats_info(self):
         if not self._worker:
-            logger.debug(f'_update_cur_stats_info() DONE')
             return
 
         cur_stats = self._worker.cur_stats
