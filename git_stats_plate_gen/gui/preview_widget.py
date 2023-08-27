@@ -26,3 +26,10 @@ class PreviewWidget(QWidget):
         else:
             self._pixmap = None
             self.ui.label.setText('No statistics to plot graph')
+
+    def save_image(self, file_path: str) -> bool:
+        if not self._pixmap:
+            return False
+
+        ret = self._pixmap.save(file_path)
+        return ret

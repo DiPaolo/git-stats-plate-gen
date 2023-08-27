@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QDialog, QDoubleSpinBox, QGridLayout,
     QHBoxLayout, QLabel, QLineEdit, QProgressBar,
     QPushButton, QSizePolicy, QSpacerItem, QSplitter,
-    QVBoxLayout, QWidget)
+    QToolButton, QVBoxLayout, QWidget)
 
 from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
@@ -26,9 +26,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(976, 551)
-        self.gridLayout = QGridLayout(Dialog)
-        self.gridLayout.setObjectName(u"gridLayout")
+        Dialog.resize(961, 547)
+        self.gridLayout_2 = QGridLayout(Dialog)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.splitter = QSplitter(Dialog)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
@@ -115,23 +115,13 @@ class Ui_Dialog(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.preview = PreviewWidget(self.layoutWidget1)
         self.preview.setObjectName(u"preview")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.preview.sizePolicy().hasHeightForWidth())
+        self.preview.setSizePolicy(sizePolicy)
 
         self.verticalLayout_2.addWidget(self.preview)
-
-        self.horizontalLayout_3 = QHBoxLayout()
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.label_4 = QLabel(self.layoutWidget1)
-        self.label_4.setObjectName(u"label_4")
-
-        self.horizontalLayout_3.addWidget(self.label_4)
-
-        self.output_base_name = QLineEdit(self.layoutWidget1)
-        self.output_base_name.setObjectName(u"output_base_name")
-
-        self.horizontalLayout_3.addWidget(self.output_base_name)
-
-
-        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
@@ -152,10 +142,57 @@ class Ui_Dialog(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_5)
 
-        self.verticalLayout_2.setStretch(0, 1)
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.label_4 = QLabel(self.layoutWidget1)
+        self.label_4.setObjectName(u"label_4")
+
+        self.gridLayout.addWidget(self.label_4, 0, 0, 1, 1)
+
+        self.output_folder = QLineEdit(self.layoutWidget1)
+        self.output_folder.setObjectName(u"output_folder")
+        self.output_folder.setEnabled(False)
+        self.output_folder.setCursorPosition(0)
+        self.output_folder.setClearButtonEnabled(False)
+
+        self.gridLayout.addWidget(self.output_folder, 0, 1, 1, 1)
+
+        self.choose_out_image_dir = QToolButton(self.layoutWidget1)
+        self.choose_out_image_dir.setObjectName(u"choose_out_image_dir")
+
+        self.gridLayout.addWidget(self.choose_out_image_dir, 0, 2, 1, 1)
+
+        self.label_6 = QLabel(self.layoutWidget1)
+        self.label_6.setObjectName(u"label_6")
+
+        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
+
+        self.image_filename_template = QLineEdit(self.layoutWidget1)
+        self.image_filename_template.setObjectName(u"image_filename_template")
+
+        self.gridLayout.addWidget(self.image_filename_template, 1, 1, 1, 1)
+
+        self.save_image = QPushButton(self.layoutWidget1)
+        self.save_image.setObjectName(u"save_image")
+
+        self.gridLayout.addWidget(self.save_image, 1, 2, 1, 1)
+
+        self.label_5 = QLabel(self.layoutWidget1)
+        self.label_5.setObjectName(u"label_5")
+
+        self.gridLayout.addWidget(self.label_5, 2, 0, 1, 1)
+
+        self.full_image_file_path = QLabel(self.layoutWidget1)
+        self.full_image_file_path.setObjectName(u"full_image_file_path")
+
+        self.gridLayout.addWidget(self.full_image_file_path, 2, 1, 1, 2)
+
+
+        self.verticalLayout_2.addLayout(self.gridLayout)
+
         self.splitter.addWidget(self.layoutWidget1)
 
-        self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.splitter, 0, 0, 1, 1)
 
 
         self.retranslateUi(Dialog)
@@ -171,7 +208,15 @@ class Ui_Dialog(object):
         self.start_stop.setText(QCoreApplication.translate("Dialog", u"Collect Statistics", None))
         self.progress_bar.setFormat(QCoreApplication.translate("Dialog", u"%v/%m (%p%)", None))
         self.debug.setText("")
-        self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Image Base Name:", None))
-        self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent:", None))
+        self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent to be Shown:", None))
+        self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Folder:", None))
+        self.output_folder.setInputMask("")
+        self.output_folder.setText("")
+        self.output_folder.setPlaceholderText("")
+        self.choose_out_image_dir.setText(QCoreApplication.translate("Dialog", u"...", None))
+        self.label_6.setText(QCoreApplication.translate("Dialog", u"Filename Template:", None))
+        self.save_image.setText(QCoreApplication.translate("Dialog", u"Save", None))
+        self.label_5.setText(QCoreApplication.translate("Dialog", u"Full Filename:", None))
+        self.full_image_file_path.setText(QCoreApplication.translate("Dialog", u"<full tilename>", None))
     # retranslateUi
 
