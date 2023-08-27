@@ -1,4 +1,4 @@
-DEBUG = True
+DEBUG = False
 MAX_REPOS_TO_PROCESS = 5 if DEBUG else 2 ** 32  # applied in DEBUG only
 
 ORGANIZATION_NAME = "DiPaolo"
@@ -8,7 +8,8 @@ APPLICATION_NAME_LOWERCASE = 'git_stats_plate_gen'
 
 # defaults
 DEFAULT_USE_CACHE = True
-DEFAULT_OUT_IMAGE_BASE_NAME = 'github_lang_stats'
+DEFAULT_OUT_IMAGE_PATH = '.'
+DEFAULT_OUT_IMAGE_BASE_NAME = 'github_lang_stats-%Y_%m_%d-%H_%M_%S.png'
 DEFAULT_MIN_PERCENT = 1.0
 
 # image

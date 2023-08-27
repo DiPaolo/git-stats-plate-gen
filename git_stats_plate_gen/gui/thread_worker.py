@@ -12,7 +12,7 @@ _l = logging.getLogger('gui.worker')
 
 class ThreadWorker(QObject):
     started = Signal()
-    finished = Signal()
+    finished = Signal(bool)
     progress = Signal(float)
 
     _cur_stats = None
@@ -78,7 +78,7 @@ class ThreadWorker(QObject):
 
         _l.info('done' if not self._cancel_requested else 'canceled')
 
-        self.finished.emit()
+        self.finished.emit(not self._cancel_requested)
 
     @Slot()
     def stop(self):
