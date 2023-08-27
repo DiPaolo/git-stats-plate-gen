@@ -169,7 +169,7 @@ class MainDialog(QDialog):
 
     def _save_image(self):
         if not self._is_data_ready():
-            msg = f"Failed to save image: stats data is not ready"
+            msg = "Failed to save image: stats data is not ready"
             logger.error(msg)
             QMessageBox.critical(self, "Save Image", msg, QMessageBox.StandardButton.Close)
             return
@@ -183,7 +183,7 @@ class MainDialog(QDialog):
 
         out_filename = self._get_output_image_filename(utils.convert_datetime_utc_to_local(self._stats_datetime_utc))
         if not out_filename:
-            msg = f"Failed to save image: output filename is invalid"
+            msg = "Failed to save image: output filename is invalid"
             logger.error(msg)
             QMessageBox.critical(self, "Save Image", msg, QMessageBox.StandardButton.Close)
             return
@@ -191,7 +191,7 @@ class MainDialog(QDialog):
         full_filename = os.path.join(out_image_folder, out_filename)
         ret = self.ui.preview.save_image(full_filename)
         if not ret:
-            msg = f"Failed to save image"
+            msg = "Failed to save image"
             logger.error(msg)
             QMessageBox.critical(self, "Save Image", msg, QMessageBox.StandardButton.Close)
             return
