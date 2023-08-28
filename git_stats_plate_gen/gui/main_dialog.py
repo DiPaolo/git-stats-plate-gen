@@ -131,7 +131,6 @@ class MainDialog(QDialog):
         event.accept()
 
     def _set_stats(self, stats_datetime_utc: Optional[datetime.datetime], stats: Optional[Dict]):
-        print('_set_stats()')
         self._stats = stats
         self._stats_datetime_utc = stats_datetime_utc
 
@@ -283,7 +282,6 @@ class MainDialog(QDialog):
             self._timer = None
 
         if self._worker:
-            print(done)
             # use it as the current stats if done + update cache
             if done:
                 self._set_stats(datetime.datetime.utcnow(), self._worker.cur_stats)
@@ -319,9 +317,6 @@ class MainDialog(QDialog):
         self._update_save_image_related_controls()
 
     def _replot_graph(self):
-        print(f'_replot_graph(): data is ready - {self._is_data_ready()}')
-        pprint.pprint(self._stats)
-        pprint.pprint(self._stats_datetime_utc)
         if not self._is_data_ready():
             # clear the image
             self.ui.preview.set_data(None)
