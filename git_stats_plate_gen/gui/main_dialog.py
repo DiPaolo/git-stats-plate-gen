@@ -105,9 +105,10 @@ class MainDialog(QDialog):
         #
 
         # after connections!
-        self._init_controls()
         stats_datetime_utc, stats = cache.load_stats()
         self._set_stats(stats_datetime_utc, stats)
+        # after stats is set to correctly enable/disable some controls
+        self._init_controls()
 
         # change preview size to new size
         QTimer.singleShot(0, lambda: self._replot_graph())
@@ -217,7 +218,7 @@ class MainDialog(QDialog):
         QMessageBox.information(self, "Save Image", msg, QMessageBox.StandardButton.Close)
 
     def _update_full_image_file_path(self):
-        if self._stats and self._stats_datetime_utc:
+        if self._is_data_ready():
             self.ui.full_image_file_path.setText(
                 os.path.join(self.ui.output_folder.text(), self._get_output_image_filename(
                     utils.convert_datetime_utc_to_local(self._stats_datetime_utc))))
