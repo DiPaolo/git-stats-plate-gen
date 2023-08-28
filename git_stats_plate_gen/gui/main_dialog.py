@@ -8,7 +8,7 @@ from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread, QStandardPaths
 from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import DataType, get_data_type_name
 from git_stats_plate_gen.core.graph import plot_graph_to_buffer
@@ -56,7 +56,7 @@ class MainDialog(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
-        self.setWindowTitle(config.APPLICATION_NAME)
+        self.setWindowTitle(config.application_name)
 
         self.log_window = LogWindow(self)
         # self.log_window.visibility_changed.connect(self.ui.show_log_window.setChecked)
@@ -140,15 +140,15 @@ class MainDialog(QDialog):
         username = settings.get_settings_str_value(SettingsKey.USERNAME, getpass.getuser())
         self.ui.username.setText(username)
 
-        out_image_path = settings.get_settings_str_value(SettingsKey.OUT_IMAGE_PATH, config.DEFAULT_OUT_IMAGE_PATH)
+        out_image_path = settings.get_settings_str_value(SettingsKey.OUT_IMAGE_PATH, config.defaults.out_image_path)
         abs_out_image_path = os.path.abspath(out_image_path)
         self.ui.output_folder.setText(abs_out_image_path)
 
         out_image_name = settings.get_settings_str_value(SettingsKey.OUT_IMAGE_BASE_NAME,
-                                                         config.DEFAULT_OUT_IMAGE_BASE_NAME)
+                                                         config.defaults.out_image_base_name)
         self.ui.image_filename_template.setText(out_image_name)
 
-        min_percent = settings.get_settings_float_value(SettingsKey.MIN_PERCENT, config.DEFAULT_MIN_PERCENT)
+        min_percent = settings.get_settings_float_value(SettingsKey.MIN_PERCENT, config.defaults.min_percent)
         self.ui.min_percent.setValue(min_percent)
 
     def _update_start_stop_status(self):

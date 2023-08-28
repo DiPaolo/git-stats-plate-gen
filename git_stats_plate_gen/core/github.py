@@ -6,7 +6,7 @@ from typing import List, Dict
 import click
 import requests
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import config
 
 
 def get_repos(token: str) -> List[Dict]:
@@ -43,7 +43,7 @@ def clone_repo(user_name: str, repo_name: str, working_dir: str):
     cmdline = ['git', 'clone', f'git@github.com:{user_name}/{repo_name}.git']
     result = subprocess.run(cmdline, cwd=working_dir, capture_output=True, universal_newlines=True, timeout=5 * 60)
 
-    if config.DEBUG:
+    if config.is_debug:
         print(f"=== ret code = {result.returncode} ===\n"
               f"   stdout: \n{result.stdout}\n\n"
               f"   stderr: \n{result.stderr}\n"
@@ -59,7 +59,7 @@ def calc_lines_local_repo(repo_dir: str) -> Dict:
     cmdline = ['cloc', '.', '--json']
     result = subprocess.run(cmdline, cwd=repo_dir, capture_output=True, universal_newlines=True, timeout=5 * 60)
 
-    if config.DEBUG:
+    if config.is_debug:
         print(f"=== ret code = {result.returncode} ===\n"
               f"   stdout: \n{result.stdout}\n\n"
               f"   stderr: \n{result.stderr}\n"

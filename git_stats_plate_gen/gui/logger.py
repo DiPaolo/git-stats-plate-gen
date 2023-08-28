@@ -2,7 +2,7 @@ import datetime
 
 from PySide6.QtWidgets import QTableWidgetItem
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import config
 
 _log_widget = None
 
@@ -25,7 +25,7 @@ def info(msg: str):
 
 
 def debug(msg: str):
-    if config.DEBUG:
+    if config.is_debug:
         print(f'[DEBUG]   {msg}')
         if _log_widget:
             _add_to_log_tree_widget(datetime.datetime.now(), 'Debug', msg)
