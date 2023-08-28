@@ -3,7 +3,7 @@ from typing import Optional
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import Config
 from git_stats_plate_gen.gui.ui.ui_preview_widget import Ui_Form
 
 
@@ -21,7 +21,7 @@ class PreviewWidget(QWidget):
         if data:
             if not self._pixmap:
                 self._pixmap = QPixmap()
-            self._pixmap.loadFromData(data, format=config.INTERNAL_IMAGE_TYPE)
+            self._pixmap.loadFromData(data, format=Config.internal_image_type)
             self.ui.label.setPixmap(self._pixmap)
         else:
             self._pixmap = None

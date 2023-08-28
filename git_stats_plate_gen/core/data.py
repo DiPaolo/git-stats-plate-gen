@@ -3,7 +3,7 @@ import pprint
 import tempfile
 from typing import Dict, Optional
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core.github import clone_repo, calc_lines_local_repo
 
 
@@ -31,7 +31,7 @@ def collect_data_gen(user_name: str, token: str):
         yield 0, 0, None
         # from git_stats_plate_gen.core.gitlab import get_repo_langs, get_repos
 
-    if config.DEBUG:
+    if config.is_debug:
         print(f'Total {len(repos)} repos')
 
     if len(repos) == 0:
@@ -40,7 +40,7 @@ def collect_data_gen(user_name: str, token: str):
     lang_stats = dict()
     processed_count = 0
 
-    left_count = min(len(repos), config.MAX_REPOS_TO_PROCESS if config.DEBUG else len(repos))
+    left_count = min(len(repos), config.max_repos_to_process if config.is_debug else len(repos))
 
     for repo in repos:
         yield processed_count, left_count, lang_stats
@@ -76,7 +76,7 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
     is_fork = repo['fork']
     fork_info_str = 'fork' if is_fork else 'own'
 
-    if config.DEBUG:
+    if config.is_debug:
         print(f"{repo['name']} ({'private' if repo['private'] else 'public'}, {permission_str}, {fork_info_str}): "
               f"{repo['language']}")
 
@@ -148,7 +148,7 @@ def _calc_main(user_name: str, token: str, repo: Dict) -> Dict:
         return dict()
 
     repo_langs = get_repo_langs(user_name, token, repo['name'])
-    if config.DEBUG:
+    if config.is_debug:
         pprint.pprint(repo_langs)
 
     if len(repo_langs) == 0:

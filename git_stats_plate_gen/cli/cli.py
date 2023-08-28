@@ -3,7 +3,7 @@ import sys
 
 import click
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import config
 from git_stats_plate_gen.cli.exit_codes import ExitCode
 from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import DataType
@@ -21,13 +21,13 @@ from git_stats_plate_gen.core.graph import plot_graph_to_file
                    "just google 'GitHub Creating a personal access token'); you need only to grant access to"
                    "Repository permissions: Read access to code, commit statuses, and metadata")
 @click.option('-o', '--output', 'output_base_name', metavar='<filename>',
-              default=config.DEFAULT_OUT_IMAGE_BASE_NAME, show_default=True,
+              default=config.defaults.out_image_base_name, show_default=True,
               help='Output image filename where the graph will be written')
 @click.option('--cache/--no-cache', 'use_cache',
-              is_flag=True, default=config.DEFAULT_USE_CACHE, show_default=True,
+              is_flag=True, default=config.defaults.use_cache, show_default=True,
               help='Use cached data to plot graphics')
 @click.option('-mp', '--min-percent',
-              type=float, default=config.DEFAULT_MIN_PERCENT,
+              type=float, default=config.defaults.min_percent,
               help='Lower boundary (%) that language must have to be shown')
 def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
     if not use_cache and user is None:

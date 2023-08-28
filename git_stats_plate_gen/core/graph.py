@@ -7,7 +7,7 @@ import click
 import plotly.graph_objects as go
 import plotly.io as pio
 
-from git_stats_plate_gen import config
+from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core.common import DataType, get_data_type_name
 
 
@@ -22,7 +22,7 @@ def map_data_type_to_text(data_type: DataType) -> str:
 
 def plot_graph_to_file(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
                        output_dir: str = '.', output_base_name: str = 'github_langs_stats',
-                       width: int = config.DEFAULT_IMAGE_WIDTH, height: int = config.DEFAULT_IMAGE_HEIGHT):
+                       width: int = config.defaults.image_width, height: int = config.defaults.image_height):
     param_name = get_data_type_name(data_type)
     output_filename = f"{output_base_name}_{param_name}_{datetime.datetime.now().strftime('%Y-%m-%d')}.png"
     output_full_abs_filename = os.path.abspath(os.path.join(output_dir, output_filename))
@@ -38,10 +38,10 @@ def plot_graph_to_file(stats: Dict, data_type: DataType = DataType.LINES, min_pe
 
 
 def plot_graph_to_buffer(stats: Dict, data_type: DataType = DataType.LINES, min_percent: float = 1.0,
-                         width: int = config.DEFAULT_IMAGE_WIDTH, height: int = config.DEFAULT_IMAGE_HEIGHT) -> bytes:
+                         width: int = config.defaults.image_width, height: int = config.defaults.image_height) -> bytes:
     fig, total_code = _plot_graph_internal(stats, data_type, min_percent)
 
-    image_data = pio.to_image(fig, config.INTERNAL_IMAGE_TYPE, width, height)
+    image_data = pio.to_image(fig, config.internal_image_type, width, height)
     return image_data
 
 
@@ -95,7 +95,7 @@ def _plot_graph_internal(stats: Dict, data_type: DataType, min_percent: float) -
 
     fig.update_layout(annotations=annotations)
 
-    if config.DEBUG:
+    if config.is_debug:
         pprint.pprint(sorted_lang_stats)
         for lang, code in sorted_lang_stats:
             click.echo(f'  {lang} - {code} ({code * 100.0 / total_code :4.2f}%)')
