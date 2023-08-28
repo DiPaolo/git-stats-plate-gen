@@ -1,7 +1,6 @@
 import datetime
 import getpass
 import os.path
-import pprint
 from typing import Optional, Dict
 
 from PySide6 import QtCore
