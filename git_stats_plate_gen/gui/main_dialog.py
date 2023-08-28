@@ -8,6 +8,7 @@ from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread, QStandardPaths
 from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
+from git_stats_plate_gen import __version__
 from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import DataType, get_data_type_name
@@ -56,7 +57,7 @@ class MainDialog(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
-        self.setWindowTitle(config.application_name)
+        self.setWindowTitle(f'{config.application_name} {config.app_version.as_str(2)}')
 
         self.log_window = LogWindow(self)
         # self.log_window.visibility_changed.connect(self.ui.show_log_window.setChecked)
@@ -150,6 +151,22 @@ class MainDialog(QDialog):
 
         min_percent = settings.get_settings_float_value(SettingsKey.MIN_PERCENT, config.defaults.min_percent)
         self.ui.min_percent.setValue(min_percent)
+
+        self._init_about_program()
+
+    def _init_about_program(self):
+        self.ui.program_name_n_version.setText(
+            f'<p style="color:gray;">'
+            f'{config.application_name} {config.app_version.as_str(4)}'
+            f'</p>'
+        )
+
+        self.ui.copyright.setText(
+            f"<p style='color:gray;'>"
+            f"Copyright 2023 {__version__.__author__} "
+            f"(<a href='mailto:{__version__.__author_email__}'>{__version__.__author_email__}</a>)"
+            f"</p>"
+        )
 
     def _update_start_stop_status(self):
         elems = [self.ui.username, self.ui.token]

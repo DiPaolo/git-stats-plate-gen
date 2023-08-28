@@ -3,8 +3,8 @@ import sys
 
 import click
 
-from git_stats_plate_gen.config import config
 from git_stats_plate_gen.cli.exit_codes import ExitCode
+from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import DataType
 from git_stats_plate_gen.core.data import collect_data
@@ -12,6 +12,8 @@ from git_stats_plate_gen.core.graph import plot_graph_to_file
 
 
 @click.command()
+@click.option('-v', '--version', is_flag=True, default=False,
+              help='Print version')
 @click.option('-u', '--user', metavar='<name>',
               default=None,
               help='GitHub username')
@@ -29,7 +31,13 @@ from git_stats_plate_gen.core.graph import plot_graph_to_file
 @click.option('-mp', '--min-percent',
               type=float, default=config.defaults.min_percent,
               help='Lower boundary (%) that language must have to be shown')
-def cli(user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
+def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
+    # print banner
+    click.echo(f'{config.application_name} {config.app_version.as_str(4)}\n')
+
+    if version:
+        sys.exit(ExitCode.OK.value)
+
     if not use_cache and user is None:
         click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument",
                    err=True)
