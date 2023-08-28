@@ -34,7 +34,7 @@ def _get_env_param_name(env_param: EnvParam) -> str:
 def _get_env_param_str(param: EnvParam, default: str = '') -> str:
     param_name = param.as_str()
 
-    if param_name not in os.environ or type(os.environ[param_name]) != str:
+    if param_name not in os.environ or isinstance(os.environ[param_name], str):
         return default
 
     return os.environ[param_name]
