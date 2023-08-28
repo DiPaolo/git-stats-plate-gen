@@ -91,8 +91,10 @@ GUI:
 python -m git_stats_plate_gen.gui
 ```
 
-### Licence
-MIT.
+### License
+MIT License
+
+Copyright (c) 2023 Pavel Dittenbier
 
 Please refer to ![License page](https://github.com/DiPaolo/git-stats-plate-gen/blob/main/LICENSE) for details.
 
