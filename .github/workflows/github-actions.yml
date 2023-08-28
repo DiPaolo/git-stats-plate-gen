@@ -101,6 +101,13 @@ jobs:
         if: github.ref_type == 'tag'
         shell: bash
         run: |
+          export GSPG_VERSION_MAJOR=$GSPG_VERSION_MAJOR
+          export GSPG_VERSION_MINOR=$GSPG_VERSION_MINOR
+          export GSPG_VERSION_PATCH=$GSPG_VERSION_PATCH
+          export GSPG_VERSION_BUILD_NUMBER=$GSPG_VERSION_BUILD_NUMBER
+
+          export GSPG_IS_DEBUG=0
+          
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir git_stats_plate_gen/cli/__main__.py
           pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir git_stats_plate_gen/gui/__main__.py
