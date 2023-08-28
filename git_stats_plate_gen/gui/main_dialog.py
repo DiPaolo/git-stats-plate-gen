@@ -1,7 +1,6 @@
 import datetime
 import getpass
 import os.path
-import pprint
 from typing import Optional, Dict
 
 from PySide6 import QtCore
@@ -105,9 +104,10 @@ class MainDialog(QDialog):
         #
 
         # after connections!
-        self._init_controls()
         stats_datetime_utc, stats = cache.load_stats()
         self._set_stats(stats_datetime_utc, stats)
+        # after stats is set to correctly enable/disable some controls
+        self._init_controls()
 
         # change preview size to new size
         QTimer.singleShot(0, lambda: self._replot_graph())
@@ -131,7 +131,6 @@ class MainDialog(QDialog):
         event.accept()
 
     def _set_stats(self, stats_datetime_utc: Optional[datetime.datetime], stats: Optional[Dict]):
-        print('_set_stats()')
         self._stats = stats
         self._stats_datetime_utc = stats_datetime_utc
 
@@ -218,7 +217,7 @@ class MainDialog(QDialog):
         QMessageBox.information(self, "Save Image", msg, QMessageBox.StandardButton.Close)
 
     def _update_full_image_file_path(self):
-        if self._stats and self._stats_datetime_utc:
+        if self._is_data_ready():
             self.ui.full_image_file_path.setText(
                 os.path.join(self.ui.output_folder.text(), self._get_output_image_filename(
                     utils.convert_datetime_utc_to_local(self._stats_datetime_utc))))
@@ -283,7 +282,6 @@ class MainDialog(QDialog):
             self._timer = None
 
         if self._worker:
-            print(done)
             # use it as the current stats if done + update cache
             if done:
                 self._set_stats(datetime.datetime.utcnow(), self._worker.cur_stats)
@@ -319,9 +317,6 @@ class MainDialog(QDialog):
         self._update_save_image_related_controls()
 
     def _replot_graph(self):
-        print(f'_replot_graph(): data is ready - {self._is_data_ready()}')
-        pprint.pprint(self._stats)
-        pprint.pprint(self._stats_datetime_utc)
         if not self._is_data_ready():
             # clear the image
             self.ui.preview.set_data(None)
