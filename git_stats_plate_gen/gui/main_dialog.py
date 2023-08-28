@@ -56,7 +56,7 @@ class MainDialog(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
-        self.setWindowTitle(config.application_name)
+        self.setWindowTitle(f'{config.application_name} {config.app_version.as_str(2)}')
 
         self.log_window = LogWindow(self)
         # self.log_window.visibility_changed.connect(self.ui.show_log_window.setChecked)
