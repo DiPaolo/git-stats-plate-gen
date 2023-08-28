@@ -29,6 +29,27 @@ class Ui_Dialog(object):
         Dialog.resize(961, 547)
         self.gridLayout_2 = QGridLayout(Dialog)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.program_name_n_version = QLabel(Dialog)
+        self.program_name_n_version.setObjectName(u"program_name_n_version")
+        self.program_name_n_version.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.horizontalLayout_3.addWidget(self.program_name_n_version)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer)
+
+        self.copyright = QLabel(Dialog)
+        self.copyright.setObjectName(u"copyright")
+        self.copyright.setOpenExternalLinks(True)
+
+        self.horizontalLayout_3.addWidget(self.copyright)
+
+
+        self.gridLayout_2.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
+
         self.splitter = QSplitter(Dialog)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
@@ -194,6 +215,11 @@ class Ui_Dialog(object):
 
         self.gridLayout_2.addWidget(self.splitter, 0, 0, 1, 1)
 
+        self.verticalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.gridLayout_2.addItem(self.verticalSpacer_2, 1, 0, 1, 1)
+
+        self.gridLayout_2.setRowStretch(0, 1)
 
         self.retranslateUi(Dialog)
 
@@ -202,6 +228,8 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
+        self.program_name_n_version.setText(QCoreApplication.translate("Dialog", u"<program name & version>", None))
+        self.copyright.setText(QCoreApplication.translate("Dialog", u"<copyright>", None))
         self.label.setText(QCoreApplication.translate("Dialog", u"GitHub User Name:", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
         self.stats_status.setText(QCoreApplication.translate("Dialog", u"<statistics status>", None))
