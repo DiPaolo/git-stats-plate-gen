@@ -16,7 +16,7 @@ CLI & GUI tool to generate image plate for your GitHub repositories.
 ![](./assets/screenshot_2023_08_28_v1.0.0.png)
 
 ### Download
-Pre-built binaries for **Windows**, **Linux**, and **MacOS** are available at ![Release](./release) page.
+Pre-built binaries for **Windows**, **Linux**, and **MacOS** are available at ![Release](https://github.com/DiPaolo/git-stats-plate-gen/releases) page.
 
 ### Usage
 
@@ -94,7 +94,7 @@ python -m git_stats_plate_gen.gui
 ### Licence
 MIT.
 
-Please refer to ![License page](./blob/main/LICENSE) for details.
+Please refer to ![License page](https://github.com/DiPaolo/git-stats-plate-gen/blob/main/LICENSE) for details.
 
 ### Contact
-Please feel free to contact me: ![pavel.ditenbir@gmail.com](mailto:pavel.ditenbir@gmail.com). 
+Please feel free to contact me: [pavel.ditenbir@gmail.com](mailto:pavel.ditenbir@gmail.com). 
