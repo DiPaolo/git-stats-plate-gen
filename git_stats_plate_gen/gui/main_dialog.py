@@ -77,6 +77,8 @@ class MainDialog(QDialog):
         # self.ui.show_log_window.toggled.connect(lambda checked: self.log_window.setVisible(checked))
         # self.ui.show_log_window.setChecked(True)
 
+        self.ui.username.textChanged.connect(lambda text: settings.set_settings_str_value(SettingsKey.USERNAME, text))
+
         self._stats_changed.connect(self._update_cur_stats_status)
         self._stats_changed.connect(self._replot_graph)
         self._stats_changed.connect(self._update_save_image_related_controls)
