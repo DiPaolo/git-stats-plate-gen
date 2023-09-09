@@ -1,7 +1,10 @@
 import datetime
+import enum
 import getpass
 import os.path
-from typing import Optional, Dict
+import uuid
+from dataclasses import dataclass
+from typing import Optional, Dict, Tuple, List
 
 from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread, QStandardPaths
@@ -39,6 +42,18 @@ def replace_output_image_filename_template(template: str, dt: datetime.datetime)
 
 
 class MainDialog(QDialog):
+    @dataclass
+    class UserMessageId(object):
+        _uuid = uuid.uuid4()
+
+        def __eq__(self, other):
+            return self._uuid == other._uuid
+
+    class UserMessage(enum.Enum):
+        INFO = 0
+        WARNING = 1
+        ERROR = 2
+
     started = Signal()
     stopped = Signal()
     _stats_changed = Signal()
@@ -50,11 +65,15 @@ class MainDialog(QDialog):
     _worker = None
     _timer = None
 
+    _user_messages: List[Tuple[UserMessageId, UserMessage, str]]
+
     def __init__(self):
         super(MainDialog, self).__init__()
 
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+
+        self._user_messages = list()
 
         self.setWindowTitle(f'{config.application_name} {config.app_version.as_str(2)}')
 
@@ -92,6 +111,8 @@ class MainDialog(QDialog):
         self.ui.min_percent.valueChanged.connect(self._replot_graph)
 
         self.ui.output_folder.textChanged.connect(self._update_full_image_file_path)
+        self.ui.output_folder.textChanged.connect(self._check_access_to_output_folder)
+        self.ui.output_folder.textChanged.connect(self._update_save_image_related_controls)
         self.ui.image_filename_template.textChanged.connect(self._update_full_image_file_path)
 
         # start/stop + exit
@@ -139,8 +160,16 @@ class MainDialog(QDialog):
         self._stats_changed.emit()
 
     def _init_controls(self):
+        #
+        # left part
+        #
+
         username = settings.get_settings_str_value(SettingsKey.USERNAME, getpass.getuser())
         self.ui.username.setText(username)
+
+        #
+        # right part
+        #
 
         out_image_path = settings.get_settings_str_value(SettingsKey.OUT_IMAGE_PATH, config.defaults.out_image_path)
         abs_out_image_path = os.path.abspath(out_image_path)
@@ -218,6 +247,7 @@ class MainDialog(QDialog):
         logger.info(msg)
         QMessageBox.information(self, "Save Image", msg, QMessageBox.StandardButton.Close)
 
+    @Slot()
     def _update_full_image_file_path(self):
         if self._is_data_ready():
             self.ui.full_image_file_path.setText(
@@ -227,6 +257,21 @@ class MainDialog(QDialog):
             full_filename = os.path.join(self.ui.output_folder.text(),
                                          self._get_output_image_filename(datetime.datetime.now()))
             self.ui.full_image_file_path.setText(f'{full_filename} (example)')
+
+    @Slot()
+    def _check_access_to_output_folder(self):
+        if not self._has_access_to_output_folder():
+            self._check_access_to_output_folder_user_msg_id = (
+                self._add_user_message(self.UserMessage.WARNING,
+                                       'You have no write access to the output folder'))
+        else:
+            try:
+                self._remove_user_message(self._check_access_to_output_folder_user_msg_id)
+            except AttributeError:
+                pass
+
+    def _has_access_to_output_folder(self) -> bool:
+        return os.access(self.ui.output_folder.text(), os.W_OK)
 
     def _get_output_image_filename(self, dt: datetime.datetime) -> str:
         return replace_output_image_filename_template(self.ui.image_filename_template.text(), dt)
@@ -366,3 +411,48 @@ class MainDialog(QDialog):
             self.ui.min_percent,
             self.ui.save_image,
         ]]
+
+        # additional requirement for save image button
+        if not self._has_access_to_output_folder():
+            self.ui.save_image.setEnabled(False)
+
+    def _add_user_message(self, msg_type: UserMessage, msg: str) -> UserMessageId:
+        user_msg_id = self.UserMessageId()
+        self._user_messages.append((user_msg_id, msg_type, msg))
+        self._update_user_message()
+        return user_msg_id
+
+    def _remove_user_message(self, user_msg_id: UserMessageId):
+        self._user_messages = list(filter(lambda item: item[0] != user_msg_id, self._user_messages))
+        for um in self._user_messages:
+            if um[0] == user_msg_id:
+                print('OK')
+            else:
+                print('WTF')
+        self._update_user_message()
+
+    def _update_user_message(self):
+        if len(self._user_messages) == 0:
+            self.ui.user_message.clear()
+            return
+
+        prefix = ''
+        color = 'gray'
+
+        (msg_id, msg_type, msg) = self._user_messages[-1]
+
+        if msg_type == self.UserMessage.INFO:
+            prefix = 'INFO: '
+        elif msg_type == self.UserMessage.WARNING:
+            prefix = 'WARNING: '
+            color = 'orange'
+        elif msg_type == self.UserMessage.ERROR:
+            prefix = 'ERROR: '
+            color = 'tomato'
+        else:
+            logger.error(f'Unhandled user message type (type={msg_type}, msg={msg})')
+
+        style_begin = f"<p style='color:{color};'>" if color else ''
+        style_end = '</p>' if color else ''
+
+        self.ui.user_message.setText(f"{style_begin}{prefix}{msg}{style_end}")
