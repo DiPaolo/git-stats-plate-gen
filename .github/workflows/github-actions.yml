@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
+      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -87,7 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
+      - name: 'Set up Python ${{ matrix.python-version }}@${{ matrix.os}}: ${{ github.ref_type }} (git_stats_plate_gen_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}})'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -97,7 +97,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 'Build binaries: GUI'
+      - name: 'Build binaries'
         if: github.ref_type == 'tag'
         shell: bash
         run: |
@@ -109,8 +109,7 @@ jobs:
           export GSPG_IS_DEBUG=0
           
           pip install pyinstaller
-          pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir git_stats_plate_gen/cli/__main__.py
-          # pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir git_stats_plate_gen/gui/__main__.py
+          pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir git_stats_plate_gen/__main__.py
 
           # debug
           echo "== DEBUG ENV =="
@@ -118,20 +117,11 @@ jobs:
           echo "== DEBUG ENV == DONE =="
 
           if [ "$RUNNER_OS" == "Linux" ]; then
-            rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
-            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
-
-            # tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
-            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+            tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
-            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
-
-            # tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
-            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+            tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            # tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
-            tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
+            tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
           fi
 
       - name: Load release URL file from release job
@@ -150,24 +140,13 @@ jobs:
           TAG_REF_NAME: ${{ github.ref }}
           REPOSITORY_NAME: ${{ github.repository }}
 
-#      - name: 'Upload artifacts: CLI'
-#        if: github.ref_type == 'tag'
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ github.token }}
-#        with:
-#          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-#          asset_path: git_stats_plate_gen_cli.tar.gz
-#          asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
-#          asset_content_type: application/gzip
-
-      - name: 'Upload artifacts: GUI'
+      - name: 'Upload artifacts'
         if: github.ref_type == 'tag'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: git_stats_plate_gen_gui.tar.gz
-          asset_name: git_stats_plate_gen_gui_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
+          asset_path: git_stats_plate_gen.tar.gz
+          asset_name: git_stats_plate_gen_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
           asset_content_type: application/gzip

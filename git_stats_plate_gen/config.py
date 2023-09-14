@@ -64,7 +64,7 @@ def _get_env_param_int(param: EnvParam, default: int = 0) -> int:
 class AppVersion(object):
     _instance = None
 
-    _major = 0
+    _major = 2
     _minor = 0
     _patch = 0
     _build_number = 0

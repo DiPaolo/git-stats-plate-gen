@@ -2,13 +2,15 @@ import datetime
 import sys
 
 import click
+from PySide6.QtWidgets import QApplication
 
 from git_stats_plate_gen.cli.exit_codes import ExitCode
 from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
-from git_stats_plate_gen.core.common import DataType
+from git_stats_plate_gen.core.common import get_output_image_filename
 from git_stats_plate_gen.core.data import collect_data
-from git_stats_plate_gen.core.graph import plot_graph_to_file
+from git_stats_plate_gen.gui.gui import gui
+from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
 
 @click.command()
@@ -37,12 +39,12 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
     if version:
         sys.exit(ExitCode.OK.value)
 
-    if not use_cache and user is None:
-        click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line argument",
-                   err=True)
-        sys.exit(ExitCode.INVALID_CMDLINE_USER.value)
+    if user is None:
+        # launch GUI
+        return gui()
 
     stats = None
+    gen_datetime_utc = None
 
     if use_cache:
         gen_datetime_utc, stats = cache.load_stats()
@@ -69,11 +71,19 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
 
         stats = collect_data(user, token)
         if stats is not None:
-            cache.save_stats(datetime.datetime.utcnow(), stats)
+            gen_datetime_utc = datetime.datetime.utcnow()
+            cache.save_stats(gen_datetime_utc, stats)
 
-    if stats is None:
+    if stats is None or gen_datetime_utc is None:
         sys.exit(ExitCode.FAILED_COLLECT_STATS.value)
 
-    plot_graph_to_file(stats, DataType.LINES, min_percent, output_base_name=output_base_name)
+    output_image_name = get_output_image_filename(gen_datetime_utc, output_base_name)
+
+    # we must create GUI application to be able to create a window
+    QApplication(sys.argv)
+    preview = PreviewWidget()
+
+    preview.set_data(stats, min_percent)
+    preview.save_image(output_image_name)
 
     sys.exit(ExitCode.OK.value)
