@@ -14,7 +14,6 @@ from git_stats_plate_gen import __version__
 from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import DataType, get_data_type_name
-from git_stats_plate_gen.core.graph import plot_graph_to_buffer
 from git_stats_plate_gen.gui import logger, settings
 from git_stats_plate_gen.gui.log_window import LogWindow
 from git_stats_plate_gen.gui.settings import SettingsKey
@@ -369,10 +368,9 @@ class MainDialog(QDialog):
             self.ui.preview.set_data(None)
             return
 
-        size = self.ui.preview.size()
-        plot_data = plot_graph_to_buffer(self._stats, min_percent=self.ui.min_percent.value(),
-                                         width=size.width(), height=size.height())
-        self.ui.preview.set_data(plot_data)
+        stats_dict = dict(self._stats.items())
+        lines_only_stats_dict = {key: value['lines'] for (key, value) in stats_dict.items() if 'lines' in value}
+        self.ui.preview.set_data(lines_only_stats_dict, self.ui.min_percent.value())
 
     def _is_data_ready(self) -> bool:
         return bool(self._stats and self._stats_datetime_utc)
@@ -424,11 +422,6 @@ class MainDialog(QDialog):
 
     def _remove_user_message(self, user_msg_id: UserMessageId):
         self._user_messages = list(filter(lambda item: item[0] != user_msg_id, self._user_messages))
-        for um in self._user_messages:
-            if um[0] == user_msg_id:
-                print('OK')
-            else:
-                print('WTF')
         self._update_user_message()
 
     def _update_user_message(self):
