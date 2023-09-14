@@ -117,14 +117,8 @@ jobs:
           echo "== DEBUG ENV == DONE =="
 
           if [ "$RUNNER_OS" == "Linux" ]; then
-            rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
-            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
-
             tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
-            rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
-
             tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
           elif [ "$RUNNER_OS" == "Windows" ]; then
             tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
