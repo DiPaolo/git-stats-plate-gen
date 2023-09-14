@@ -366,13 +366,16 @@ class MainDialog(QDialog):
     def _replot_graph(self):
         if not self._is_data_ready():
             # clear the image
-            self.ui.preview.set_data(None)
+            self.ui.preview.create_bar(None)
             return
 
         size = self.ui.preview.size()
         plot_data = plot_graph_to_buffer(self._stats, min_percent=self.ui.min_percent.value(),
                                          width=size.width(), height=size.height())
-        self.ui.preview.set_data(plot_data)
+        # self.ui.preview.set_data(plot_data)
+        dd = dict(self._stats.items())
+        dd2 = {key: value['lines'] for (key, value) in dd.items() if 'lines' in value}
+        self.ui.preview.create_bar(dd2, self.ui.min_percent.value())
 
     def _is_data_ready(self) -> bool:
         return bool(self._stats and self._stats_datetime_utc)
@@ -424,11 +427,6 @@ class MainDialog(QDialog):
 
     def _remove_user_message(self, user_msg_id: UserMessageId):
         self._user_messages = list(filter(lambda item: item[0] != user_msg_id, self._user_messages))
-        for um in self._user_messages:
-            if um[0] == user_msg_id:
-                print('OK')
-            else:
-                print('WTF')
         self._update_user_message()
 
     def _update_user_message(self):
