@@ -13,31 +13,12 @@ from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox
 from git_stats_plate_gen import __version__
 from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
-from git_stats_plate_gen.core.common import DataType, get_data_type_name
+from git_stats_plate_gen.core.common import DataType, get_data_type_name, get_output_image_filename
 from git_stats_plate_gen.gui import logger, settings
 from git_stats_plate_gen.gui.log_window import LogWindow
 from git_stats_plate_gen.gui.settings import SettingsKey
 from git_stats_plate_gen.gui.thread_worker import ThreadWorker
 from git_stats_plate_gen.gui.ui.ui_main_dialog import Ui_Dialog
-
-
-def replace_output_image_filename_template(template: str, dt: datetime.datetime) -> str:
-    allowed_directives = [
-        ('Y', f'{dt.year:04}'),
-        ('m', f'{dt.month:02}'),
-        ('d', f'{dt.day:02}'),
-        ('H', f'{dt.hour:02}'),
-        ('M', f'{dt.minute:02}'),
-        ('S', f'{dt.second:02}')
-    ]
-
-    out_str = template
-    for item in allowed_directives:
-        d = item[0]
-        value = item[1]
-        out_str = out_str.replace(f'%{d}', str(value))
-
-    return out_str
 
 
 class MainDialog(QDialog):
@@ -227,7 +208,8 @@ class MainDialog(QDialog):
             QMessageBox.critical(self, "Save Image", msg, QMessageBox.StandardButton.Close)
             return
 
-        out_filename = self._get_output_image_filename(utils.convert_datetime_utc_to_local(self._stats_datetime_utc))
+        out_filename = get_output_image_filename(utils.convert_datetime_utc_to_local(self._stats_datetime_utc),
+                                                 self.ui.image_filename_template.text())
         if not out_filename:
             msg = "Failed to save image: output filename is invalid"
             logger.error(msg)
@@ -250,11 +232,13 @@ class MainDialog(QDialog):
     def _update_full_image_file_path(self):
         if self._is_data_ready():
             self.ui.full_image_file_path.setText(
-                os.path.join(self.ui.output_folder.text(), self._get_output_image_filename(
-                    utils.convert_datetime_utc_to_local(self._stats_datetime_utc))))
+                os.path.join(self.ui.output_folder.text(),
+                             get_output_image_filename(utils.convert_datetime_utc_to_local(self._stats_datetime_utc)),
+                             self.ui.image_filename_template.text()))
         else:
             full_filename = os.path.join(self.ui.output_folder.text(),
-                                         self._get_output_image_filename(datetime.datetime.now()))
+                                         get_output_image_filename(datetime.datetime.now(),
+                                                                   self.ui.image_filename_template.text()))
             self.ui.full_image_file_path.setText(f'{full_filename} (example)')
 
     @Slot()
@@ -271,9 +255,6 @@ class MainDialog(QDialog):
 
     def _has_access_to_output_folder(self) -> bool:
         return os.access(self.ui.output_folder.text(), os.W_OK)
-
-    def _get_output_image_filename(self, dt: datetime.datetime) -> str:
-        return replace_output_image_filename_template(self.ui.image_filename_template.text(), dt)
 
     @Slot()
     def _start_collect(self):
@@ -368,9 +349,7 @@ class MainDialog(QDialog):
             self.ui.preview.set_data(None)
             return
 
-        stats_dict = dict(self._stats.items())
-        lines_only_stats_dict = {key: value['lines'] for (key, value) in stats_dict.items() if 'lines' in value}
-        self.ui.preview.set_data(lines_only_stats_dict, self.ui.min_percent.value())
+        self.ui.preview.set_data(self._stats, self.ui.min_percent.value())
 
     def _is_data_ready(self) -> bool:
         return bool(self._stats and self._stats_datetime_utc)
