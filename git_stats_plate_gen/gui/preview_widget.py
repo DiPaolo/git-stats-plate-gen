@@ -27,32 +27,12 @@ class PreviewWidget(QWidget):
 
         self.ui.chart_view.setChart(self._chart)
 
-    def create_bar(self, stats, min_percent: float = 1.0):
+    def set_data(self, stats, min_percent: float = 1.0):
         if stats is None:
             self.ui.stackedWidget.setCurrentWidget(self.ui.page_no_data)
             return
 
         self.ui.stackedWidget.setCurrentWidget(self.ui.page_chart)
-
-        # stats = dict(sorted(stats.items(), key=lambda x: x[1]))
-        # total_loc = sum(stats.values())
-        #
-        # for _ in range(0, self._set.count()):
-        #     self._set.remove(0)
-        #
-        # categories = []
-        # for lang, loc in stats.items():
-        #     percent = loc * 100 / total_loc
-        #     if percent < min_percent:
-        #         continue
-        #
-        #     self._set.append(loc)
-        #     categories.append(f'{lang} ({percent:.02f}%)')
-        #
-        # self._axis.clear()
-        # self._axis.append(categories)
-        #
-        # self._chart.axisX().setRange(0, max(stats.values()) * 1.1)
 
         stats = dict(sorted(stats.items(), key=lambda x: x[1]))
         total_loc = sum(stats.values())
