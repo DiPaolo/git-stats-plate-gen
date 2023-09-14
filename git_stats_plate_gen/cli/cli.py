@@ -74,7 +74,6 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
     if stats is None:
         sys.exit(ExitCode.FAILED_COLLECT_STATS.value)
 
-    plot_graph_to_file(stats, DataType.BYTES, min_percent, output_base_name=output_base_name)
     plot_graph_to_file(stats, DataType.LINES, min_percent, output_base_name=output_base_name)
 
     sys.exit(ExitCode.OK.value)

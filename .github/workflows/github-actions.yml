@@ -97,7 +97,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 'Build binaries: GUI & CLI'
+      - name: 'Build binaries'
         if: github.ref_type == 'tag'
         shell: bash
         run: |
@@ -110,7 +110,7 @@ jobs:
           
           pip install pyinstaller
           pyinstaller --name git_stats_plate_gen --console --path .venv/lib/python3.11/site-packages --onedir git_stats_plate_gen/cli/__main__.py
-          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir git_stats_plate_gen/gui/__main__.py
+#          pyinstaller --name 'Git Stats Plate Generator' --noconsole --path .venv/lib/python3.9/site-packages --onedir git_stats_plate_gen/gui/__main__.py
 
           # debug
           echo "== DEBUG ENV =="
@@ -121,16 +121,16 @@ jobs:
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
             rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
 
-            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+#            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
             tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
           elif [ "$RUNNER_OS" == "macOS" ]; then
             rm -rf dist/git_stats_plate_gen/kaleido/executable/bin/kaleido
             rm -rf "dist/Git Stats Plate Generator/kaleido/executable/bin/kaleido"
 
-            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+#            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
             tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
+#            tar -czvf git_stats_plate_gen_cli.tar.gz dist/git_stats_plate_gen
             tar -czvf git_stats_plate_gen_gui.tar.gz "dist/Git Stats Plate Generator"
           fi
 
@@ -150,16 +150,16 @@ jobs:
           TAG_REF_NAME: ${{ github.ref }}
           REPOSITORY_NAME: ${{ github.repository }}
 
-      - name: 'Upload artifacts: CLI'
-        if: github.ref_type == 'tag'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: git_stats_plate_gen_cli.tar.gz
-          asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
-          asset_content_type: application/gzip
+#      - name: 'Upload artifacts: CLI'
+#        if: github.ref_type == 'tag'
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#        with:
+#          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+#          asset_path: git_stats_plate_gen_cli.tar.gz
+#          asset_name: git_stats_plate_gen_cli_${{matrix.os}}_${{github.ref_name}}_b${{github.run_number}}
+#          asset_content_type: application/gzip
 
       - name: 'Upload artifacts: GUI'
         if: github.ref_type == 'tag'

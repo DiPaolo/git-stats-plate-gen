@@ -1,3 +1,5 @@
+from typing import Optional, Tuple
+
 from PySide6.QtCharts import QBarCategoryAxis, QChart, QHorizontalBarSeries, QBarSet
 from PySide6.QtWidgets import QWidget
 
@@ -101,5 +103,8 @@ class PreviewWidget(QWidget):
         self._chart.axisX().setRange(0, right_border_new)
         self._chart.axisX().setTickCount(5)
 
-    def save_image(self, file_path: str) -> bool:
-        return self.ui.chart_view.grab().save(file_path)
+    def save_image(self, file_path: str, size: Optional[Tuple[int, int]] = None) -> bool:
+        if size:
+            return self.ui.chart_view.grab().scaled(size[0], size[1]).save(file_path)
+        else:
+            return self.ui.chart_view.grab().save(file_path)
