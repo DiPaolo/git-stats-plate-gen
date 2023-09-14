@@ -116,13 +116,8 @@ jobs:
           python -c 'import os; print(os.environ)'
           echo "== DEBUG ENV == DONE =="
 
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            tar -czvf git_stats_plate_gen.tar.gz "dist/Git Stats Plate Generator"
-          fi
+          cd dist
+          tar -czvf git_stats_plate_gen.tar.gz git_stats_plate_gen
 
       - name: Load release URL file from release job
         uses: actions/download-artifact@v1
