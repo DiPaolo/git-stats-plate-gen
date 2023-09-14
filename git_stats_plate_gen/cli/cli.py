@@ -77,7 +77,7 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
     if stats is None or gen_datetime_utc is None:
         sys.exit(ExitCode.FAILED_COLLECT_STATS.value)
 
-    output_image_name = get_output_image_filename(gen_datetime_utc, config.defaults.out_image_base_name)
+    output_image_name = get_output_image_filename(gen_datetime_utc, output_base_name)
 
     # we must create GUI application to be able to create a window
     QApplication(sys.argv)
