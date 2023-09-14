@@ -89,6 +89,8 @@ class MainDialog(QDialog):
         ]]
 
         self.ui.min_percent.valueChanged.connect(self._replot_graph)
+        self.ui.min_percent.valueChanged.connect(
+            lambda value: settings.set_settings_float_value(SettingsKey.MIN_PERCENT, value))
 
         self.ui.output_folder.textChanged.connect(self._update_full_image_file_path)
         self.ui.output_folder.textChanged.connect(self._check_access_to_output_folder)
