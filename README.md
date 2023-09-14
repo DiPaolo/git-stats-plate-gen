@@ -13,7 +13,7 @@ CLI & GUI tool to generate image plate for your GitHub repositories.
   - repos deleted locally after cloned & processed
 
 ### Screenshots
-![](https://github.com/DiPaolo/git-stats-plate-gen/blob/main/assets/images/screenshot_2023_08_28_v1.0.0.png)
+![](https://github.com/DiPaolo/git-stats-plate-gen/blob/main/assets/images/screenshot_2023_09_14_v2.0.0.png)
 
 ### Download
 Pre-built binaries for **Windows**, **Linux**, and **MacOS** are available on [Release](https://github.com/DiPaolo/git-stats-plate-gen/releases) page.
@@ -51,8 +51,9 @@ Options:
 
 #### GUI
 
-Launch the binary, paste your token, and press **Collect Statistics**. NOTE: your GitHub username will be set based on
-current system account name. Please change it manually if it doesn't match your GitHub account.  
+Running the binary without any argument will launch the app if GUI mode. Then, paste your token and 
+press **Collect Statistics**. NOTE: your GitHub username will be set based on current system account name. Please 
+change it manually if it doesn't match your GitHub account.  
 
 > #### IMPORTANT
 > 
