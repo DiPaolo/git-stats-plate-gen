@@ -41,7 +41,7 @@ def set_settings_int_value(key: SettingsKey, value: int):
 
 
 def get_settings_float_value(key: SettingsKey, default: Optional[float] = 0):
-    return _get_settings().value(key.value, default)
+    return float(_get_settings().value(key.value, default))
 
 
 def set_settings_float_value(key: SettingsKey, value: float):
