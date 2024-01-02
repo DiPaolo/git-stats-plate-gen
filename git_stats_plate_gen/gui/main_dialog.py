@@ -8,7 +8,7 @@ from typing import Optional, Dict, Tuple, List
 
 from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal, QTimer, QThread, QStandardPaths
-from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox, QStyle
 
 from git_stats_plate_gen import __version__
 from git_stats_plate_gen.config import config
@@ -68,6 +68,18 @@ class MainDialog(QDialog):
         self.restoreGeometry(settings.get_settings_byte_array_value(SettingsKey.WINDOW_GEOMETRY))
         self.ui.splitter.restoreState(settings.get_settings_byte_array_value(SettingsKey.SPLITTER_STATE))
 
+        self.ui.show_token_help.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation))
+
+        self.ui.token_help.setText(
+            "To get your private token, please follow instructions at <br>"
+            "<a href='https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens'>https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens</a>"
+            "<p>You need to grant the following permissions:"
+            "<ul>"
+            "  <li>Contents - Access: Read-only</li>"
+            "  <li>Metadata - Access: Read-only</li>"
+            "</ul>"
+        )
+
         #
         # connections
         #
@@ -77,6 +89,8 @@ class MainDialog(QDialog):
         # self.ui.show_log_window.setChecked(True)
 
         self.ui.username.textChanged.connect(lambda text: settings.set_settings_str_value(SettingsKey.USERNAME, text))
+
+        self.ui.show_token_help.toggled.connect(lambda checked: self.ui.token_help.setVisible(checked))
 
         self._stats_changed.connect(self._update_cur_stats_status)
         self._stats_changed.connect(self._replot_graph)
@@ -107,6 +121,10 @@ class MainDialog(QDialog):
         #
         # initialization of controls
         #
+
+        # change state two times to make sure the default state applied
+        self.ui.show_token_help.setChecked(True)
+        self.ui.show_token_help.setChecked(False)
 
         # after connections!
         stats_datetime_utc, stats = cache.load_stats()

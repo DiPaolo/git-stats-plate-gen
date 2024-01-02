@@ -26,7 +26,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(961, 547)
+        Dialog.resize(784, 473)
         self.gridLayout_2 = QGridLayout(Dialog)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.splitter = QSplitter(Dialog)
@@ -69,8 +69,32 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2.addWidget(self.token)
 
+        self.show_token_help = QPushButton(self.layoutWidget)
+        self.show_token_help.setObjectName(u"show_token_help")
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.show_token_help.sizePolicy().hasHeightForWidth())
+        self.show_token_help.setSizePolicy(sizePolicy)
+        self.show_token_help.setMinimumSize(QSize(16, 16))
+        self.show_token_help.setMaximumSize(QSize(32, 32))
+        self.show_token_help.setCheckable(True)
+        self.show_token_help.setAutoDefault(False)
+
+        self.horizontalLayout_2.addWidget(self.show_token_help)
+
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
+
+        self.token_help = QLabel(self.layoutWidget)
+        self.token_help.setObjectName(u"token_help")
+        font = QFont()
+        font.setPointSize(9)
+        self.token_help.setFont(font)
+        self.token_help.setWordWrap(True)
+        self.token_help.setOpenExternalLinks(True)
+
+        self.verticalLayout.addWidget(self.token_help)
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
@@ -115,11 +139,11 @@ class Ui_Dialog(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.preview = PreviewWidget(self.layoutWidget1)
         self.preview.setObjectName(u"preview")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.preview.sizePolicy().hasHeightForWidth())
-        self.preview.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.preview.sizePolicy().hasHeightForWidth())
+        self.preview.setSizePolicy(sizePolicy1)
 
         self.verticalLayout_2.addWidget(self.preview)
 
@@ -144,10 +168,15 @@ class Ui_Dialog(object):
 
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label_4 = QLabel(self.layoutWidget1)
-        self.label_4.setObjectName(u"label_4")
+        self.label_6 = QLabel(self.layoutWidget1)
+        self.label_6.setObjectName(u"label_6")
 
-        self.gridLayout.addWidget(self.label_4, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
+
+        self.label_5 = QLabel(self.layoutWidget1)
+        self.label_5.setObjectName(u"label_5")
+
+        self.gridLayout.addWidget(self.label_5, 2, 0, 1, 1)
 
         self.output_folder = QLineEdit(self.layoutWidget1)
         self.output_folder.setObjectName(u"output_folder")
@@ -157,15 +186,20 @@ class Ui_Dialog(object):
 
         self.gridLayout.addWidget(self.output_folder, 0, 1, 1, 1)
 
+        self.full_image_file_path = QLabel(self.layoutWidget1)
+        self.full_image_file_path.setObjectName(u"full_image_file_path")
+
+        self.gridLayout.addWidget(self.full_image_file_path, 2, 1, 1, 2)
+
+        self.label_4 = QLabel(self.layoutWidget1)
+        self.label_4.setObjectName(u"label_4")
+
+        self.gridLayout.addWidget(self.label_4, 0, 0, 1, 1)
+
         self.choose_out_image_dir = QToolButton(self.layoutWidget1)
         self.choose_out_image_dir.setObjectName(u"choose_out_image_dir")
 
         self.gridLayout.addWidget(self.choose_out_image_dir, 0, 2, 1, 1)
-
-        self.label_6 = QLabel(self.layoutWidget1)
-        self.label_6.setObjectName(u"label_6")
-
-        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
 
         self.image_filename_template = QLineEdit(self.layoutWidget1)
         self.image_filename_template.setObjectName(u"image_filename_template")
@@ -176,16 +210,6 @@ class Ui_Dialog(object):
         self.save_image.setObjectName(u"save_image")
 
         self.gridLayout.addWidget(self.save_image, 1, 2, 1, 1)
-
-        self.label_5 = QLabel(self.layoutWidget1)
-        self.label_5.setObjectName(u"label_5")
-
-        self.gridLayout.addWidget(self.label_5, 2, 0, 1, 1)
-
-        self.full_image_file_path = QLabel(self.layoutWidget1)
-        self.full_image_file_path.setObjectName(u"full_image_file_path")
-
-        self.gridLayout.addWidget(self.full_image_file_path, 2, 1, 1, 2)
 
 
         self.verticalLayout_2.addLayout(self.gridLayout)
@@ -215,15 +239,15 @@ class Ui_Dialog(object):
 
         self.gridLayout_2.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed)
-
-        self.gridLayout_2.addItem(self.verticalSpacer_2, 2, 0, 1, 1)
-
         self.user_message = QLabel(Dialog)
         self.user_message.setObjectName(u"user_message")
         self.user_message.setTextFormat(Qt.RichText)
 
         self.gridLayout_2.addWidget(self.user_message, 1, 0, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.gridLayout_2.addItem(self.verticalSpacer_2, 2, 0, 1, 1)
 
         self.gridLayout_2.setRowStretch(0, 1)
 
@@ -236,20 +260,22 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
         self.label.setText(QCoreApplication.translate("Dialog", u"GitHub User Name:", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
+        self.show_token_help.setText("")
+        self.token_help.setText(QCoreApplication.translate("Dialog", u"<will be set programmatically>", None))
         self.stats_status.setText(QCoreApplication.translate("Dialog", u"<statistics status>", None))
         self.start_stop.setText(QCoreApplication.translate("Dialog", u"Collect Statistics", None))
         self.progress_bar.setFormat(QCoreApplication.translate("Dialog", u"%v/%m (%p%)", None))
         self.debug.setText("")
         self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent to be Shown:", None))
-        self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Folder:", None))
+        self.label_6.setText(QCoreApplication.translate("Dialog", u"Filename Template:", None))
+        self.label_5.setText(QCoreApplication.translate("Dialog", u"Full Filename:", None))
         self.output_folder.setInputMask("")
         self.output_folder.setText("")
         self.output_folder.setPlaceholderText("")
-        self.choose_out_image_dir.setText(QCoreApplication.translate("Dialog", u"...", None))
-        self.label_6.setText(QCoreApplication.translate("Dialog", u"Filename Template:", None))
-        self.save_image.setText(QCoreApplication.translate("Dialog", u"Save", None))
-        self.label_5.setText(QCoreApplication.translate("Dialog", u"Full Filename:", None))
         self.full_image_file_path.setText(QCoreApplication.translate("Dialog", u"<full tilename>", None))
+        self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Folder:", None))
+        self.choose_out_image_dir.setText(QCoreApplication.translate("Dialog", u"...", None))
+        self.save_image.setText(QCoreApplication.translate("Dialog", u"Save", None))
         self.program_name_n_version.setText(QCoreApplication.translate("Dialog", u"<program name & version>", None))
         self.copyright.setText(QCoreApplication.translate("Dialog", u"<copyright>", None))
         self.user_message.setText("")
