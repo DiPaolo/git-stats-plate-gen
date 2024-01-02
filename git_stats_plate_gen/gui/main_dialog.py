@@ -175,7 +175,7 @@ class MainDialog(QDialog):
 
         self.ui.copyright.setText(
             f"<p style='color:gray;'>"
-            f"Copyright 2023 {__version__.__author__} "
+            f"Copyright 2023-2024 {__version__.__author__} "
             f"(<a href='mailto:{__version__.__author_email__}'>{__version__.__author_email__}</a>)"
             f"</p>"
         )
