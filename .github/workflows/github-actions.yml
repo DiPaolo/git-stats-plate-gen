@@ -67,10 +67,7 @@ jobs:
       - name: Lint with ruff
         run: |
           pip install ruff
-          # stop the build if there are Python syntax errors or undefined names
-          ruff --format=github --select=E9,F63,F7,F82 --target-version=py311 .
-          # default set of ruff rules with GitHub Annotations
-          ruff --format=github --target-version=py37 .
+          python -m ruff check .
 
   build-n-upload:
     if: contains(github.ref, 'tags/v')
