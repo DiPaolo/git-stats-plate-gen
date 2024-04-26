@@ -10,12 +10,27 @@ from git_stats_plate_gen.config import config
 
 
 def get_repos(token: str) -> List[Dict]:
+    out = list()
+
+    cur_page = 0
+    while True:
+        cur_page_repos = _get_repos_page(token, cur_page)
+        out += cur_page_repos
+        if len(cur_page_repos) < 100:
+            break
+
+        cur_page += 1
+
+    return out
+
+
+def _get_repos_page(token: str, page: int) -> List[Dict]:
     headers = {
         'Accept': 'application/vnd.github+json',
         'Authorization': f'Bearer {token}',
         'X-GitHub-Api-Version': '2022-11-28'
     }
-    ret = requests.get('https://api.github.com/user/repos?per_page=100', headers=headers)
+    ret = requests.get(f'https://api.github.com/user/repos?per_page=100&page={page + 1}', headers=headers)
     if not ret.ok:
         click.echo(f"Failed to get repos from GitHub: {ret.reason}", err=True)
         return list()
