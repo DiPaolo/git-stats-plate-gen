@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import enum
 import pprint
 import tempfile
@@ -42,26 +43,34 @@ def collect_data_gen(user_name: str, token: str):
 
     left_count = min(len(repos), config.max_repos_to_process if config.is_debug else len(repos))
 
-    for repo in repos:
-        yield processed_count, left_count, lang_stats
+    counter = 0
 
-        ret_code, cur_repo_lang_stats = _process_repo(repo, user_name, token)
-        if ret_code == RetCode.OK and cur_repo_lang_stats is not None:
-            # add current values to general statistics
-            for lang, lang_info in cur_repo_lang_stats.items():
-                if lang not in lang_stats:
-                    lang_stats[lang] = dict()
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        future_to_f_detail = {executor.submit(_process_repo, repo, user_name, token) for repo in repos}
+        for future in as_completed(future_to_f_detail):
+            print(f"Entering the for loop for {counter + 1} time")
+            counter += 1
+            try:
+                ret_code, cur_repo_lang_stats = future.result()
+            except Exception as exc:
+                print(f"Processing repo generated and exception: {exc}")
+            else:
+                if ret_code == RetCode.OK and cur_repo_lang_stats is not None:
+                    # add current values to general statistics
+                    for lang, lang_info in cur_repo_lang_stats.items():
+                        if lang not in lang_stats:
+                            lang_stats[lang] = dict()
 
-                for param, count in lang_info.items():
-                    if param not in lang_stats[lang]:
-                        lang_stats[lang][param] = count
-                    else:
-                        lang_stats[lang][param] += count
+                        for param, count in lang_info.items():
+                            if param not in lang_stats[lang]:
+                                lang_stats[lang][param] = count
+                            else:
+                                lang_stats[lang][param] += count
 
-        processed_count += 1
-        left_count -= 1
+                processed_count += 1
+                left_count -= 1
 
-    yield processed_count, left_count, lang_stats
+                yield processed_count, left_count, lang_stats
 
 
 def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[Dict]):
