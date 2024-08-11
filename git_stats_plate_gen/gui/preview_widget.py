@@ -32,6 +32,10 @@ class PreviewWidget(QWidget):
         self.ui.chart_view.setChart(self._chart)
 
     def set_data(self, lang_stats, min_percent: float = 1.0):
+        if lang_stats is None:
+            self.ui.stackedWidget.setCurrentWidget(self.ui.page_no_data)
+            return
+
         stats_dict = dict(lang_stats.items())
         stats = {key: value['lines'] for (key, value) in stats_dict.items() if 'lines' in value}
 
