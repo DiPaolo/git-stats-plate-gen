@@ -366,10 +366,10 @@ class MainDialog(QDialog):
     def _replot_graph(self):
         if not self._is_data_ready():
             # clear the image
-            self.ui.preview.set_data(None)
+            self.ui.preview.set_data(None, None)
             return
 
-        self.ui.preview.set_data(self._stats, self.ui.min_percent.value())
+        self.ui.preview.set_data(self._stats_datetime_utc, self._stats, self.ui.min_percent.value())
 
     def _is_data_ready(self) -> bool:
         return bool(self._stats and self._stats_datetime_utc)
