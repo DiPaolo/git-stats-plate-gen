@@ -39,23 +39,23 @@ def _get_repos_page(token: str, page: int) -> List[Dict]:
     return data
 
 
-def get_repo_langs(user_name: str, token: str, repo_name: str) -> List[Dict]:
+def get_repo_langs(token: str, repo: Dict) -> List[Dict]:
     headers = {
         'Accept': 'application/vnd.github+json',
         'Authorization': f'Bearer {token}',
         'X-GitHub-Api-Version': '2022-11-28'
     }
-    ret = requests.get(f'https://api.github.com/repos/{user_name}/{repo_name}/languages', headers=headers)
+    ret = requests.get(f"{repo['url']}/languages", headers=headers)
     if not ret.ok:
-        click.echo(f"Failed to get languages for repo {repo_name} from GitHub: {ret.reason}", err=True)
+        click.echo(f"Failed to get languages for repo {repo['name']} from GitHub: {ret.reason}", err=True)
         return list()
 
     data = json.loads(ret.text)
     return data
 
 
-def clone_repo(user_name: str, repo_name: str, working_dir: str):
-    cmdline = ['git', 'clone', f'git@github.com:{user_name}/{repo_name}.git']
+def clone_repo(repo: Dict, working_dir: str):
+    cmdline = ['git', 'clone', repo['ssh_url']]
     result = subprocess.run(cmdline, cwd=working_dir, capture_output=True, universal_newlines=True, timeout=5 * 60)
 
     if config.is_debug:
@@ -67,7 +67,7 @@ def clone_repo(user_name: str, repo_name: str, working_dir: str):
     if result.returncode != 0:
         return None
 
-    return os.path.join(working_dir, repo_name)
+    return os.path.join(working_dir, repo['name'])
 
 
 def calc_lines_local_repo(repo_dir: str) -> Dict:

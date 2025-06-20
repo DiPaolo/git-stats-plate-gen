@@ -17,16 +17,16 @@ class ThreadWorker(QObject):
 
     _cur_stats = None
     _cancel_requested = False
-    _username: str = None
+    # _username: str = None
     _token: str = None
     _progress: float = 0.0
     _processed = 0
     _left = 0
 
-    def __init__(self, username: str, token: str):
+    def __init__(self, token: str):
         super().__init__()
 
-        self._username = username
+        # self._username = username
         self._token = token
 
     @property
@@ -55,7 +55,7 @@ class ThreadWorker(QObject):
 
         self.started.emit()
 
-        gen = collect_data_gen(self._username, self._token)
+        gen = collect_data_gen(self._token)
         while not self._cancel_requested:
             self._processed, self._left, self._cur_stats = next(gen)
 
