@@ -13,7 +13,7 @@ CLI & GUI tool to generate image plate for your GitHub repositories.
   - repos deleted locally after cloned & processed
 
 ### Screenshots
-![](https://github.com/DiPaolo/git-stats-plate-gen/blob/main/assets/images/screenshot_2025_06_20_v2.2.0)
+![](https://github.com/DiPaolo/git-stats-plate-gen/blob/main/assets/images/screenshot_2025_06_20_v2.2.0.png)
 
 ### Download
 Pre-built binaries for **Windows**, **Linux**, and **MacOS** are available on [Release](https://github.com/DiPaolo/git-stats-plate-gen/releases) page.
