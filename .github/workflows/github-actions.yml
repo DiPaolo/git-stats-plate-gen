@@ -117,7 +117,7 @@ jobs:
           tar -czvf ../git_stats_plate_gen.tar.gz git_stats_plate_gen
 
       - name: Load release URL file from release job
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: release_url
 
