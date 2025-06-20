@@ -40,11 +40,8 @@ Usage: git_stats_plate_gen_cli [OPTIONS]
 
 Options:
   -v, --version             Print version
-  -u, --user <name>         GitHub username
-  -t, --token <token>       GitHub token (just google 'GitHub Creating a
-                            personal access token'); you need only to grant
-                            access to Repository permissions: Read access to
-                            code, commit statuses, and metadata
+  -t, --token <token>       GitHub access token (just google 'Creating a personal access token (classic)');
+                            the following permissions are required: read:org, repo
   -o, --output <filename>   Output image filename where the graph will be
                             written  [default:
                             github_lang_stats-%Y_%m_%d-%H_%M_%S.png]
