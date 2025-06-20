@@ -14,8 +14,8 @@ class RetCode(enum.Enum):
     IS_EMPTY = 2
 
 
-def collect_data(user_name: str, token: str):
-    gen = collect_data_gen(user_name, token)
+def collect_data(token: str):
+    gen = collect_data_gen(token)
     while True:
         processed, left, stats = next(gen)
         if left == 0:

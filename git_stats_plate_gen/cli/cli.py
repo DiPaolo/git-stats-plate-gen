@@ -9,16 +9,12 @@ from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
 from git_stats_plate_gen.core.common import get_output_image_filename
 from git_stats_plate_gen.core.data import collect_data
-from git_stats_plate_gen.gui.gui import gui
 from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
 
 @click.command()
 @click.option('-v', '--version', is_flag=True, default=False,
               help='Print version')
-@click.option('-u', '--user', metavar='<name>',
-              default=None,
-              help='GitHub username')
 @click.option('-t', '--token', metavar='<token>',
               default=None,
               help="GitHub access token (just google 'Creating a personal access token (classic)'); the following "
@@ -32,16 +28,12 @@ from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 @click.option('-mp', '--min-percent',
               type=float, default=config.defaults.min_percent,
               help='Lower boundary (%) that language must have to be shown')
-def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: bool, min_percent: float):
+def cli(version: bool, token: str, output_base_name: str, use_cache: bool, min_percent: float):
     # print banner
     click.echo(f'{config.application_name} {config.app_version.as_str(4)}\n')
 
     if version:
         sys.exit(ExitCode.OK.value)
-
-    if user is None:
-        # launch GUI
-        return gui()
 
     stats = None
     gen_datetime_utc = None
@@ -56,11 +48,6 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
             click.echo(f'Using cache from {gen_datetime_str}')
 
     if stats is None:
-        if user is None:
-            click.echo("ERROR: user is not specified. Please specify it using '-u'/'--user' command line "
-                       "argument", err=True)
-            sys.exit(ExitCode.INVALID_CMDLINE_USER.value)
-
         if token is None:
             token = click.prompt('Token', hide_input=True, default=None)
             if token is None:
@@ -69,7 +56,7 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
                     "or during being asked for in command line prompt", err=True)
                 sys.exit(ExitCode.INVALID_CMDLINE_TOKEN.value)
 
-        stats = collect_data(user, token)
+        stats = collect_data(token)
         if stats is not None:
             gen_datetime_utc = datetime.datetime.utcnow()
             cache.save_stats(gen_datetime_utc, stats)
