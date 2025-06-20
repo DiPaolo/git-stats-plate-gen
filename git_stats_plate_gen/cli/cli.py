@@ -83,7 +83,7 @@ def cli(version: bool, user: str, token: str, output_base_name: str, use_cache: 
     QApplication(sys.argv)
     preview = PreviewWidget()
 
-    preview.set_data(stats, min_percent)
+    preview.set_data(gen_datetime_utc, stats, min_percent)
     preview.save_image(output_image_name)
 
     sys.exit(ExitCode.OK.value)
