@@ -22,10 +22,10 @@ def collect_data(user_name: str, token: str):
             return stats
 
 
-def collect_data_gen(user_name: str, token: str):
+def collect_data_gen(token: str):
     repos = []
 
-    if token.startswith('github'):
+    if token.startswith('github_') or token.startswith('ghp_'):
         from git_stats_plate_gen.core.github import get_repos
         repos = get_repos(token)
     else:
@@ -46,7 +46,7 @@ def collect_data_gen(user_name: str, token: str):
     counter = 0
 
     with ThreadPoolExecutor(max_workers=20) as executor:
-        future_to_f_detail = {executor.submit(_process_repo, repo, user_name, token) for repo in repos}
+        future_to_f_detail = {executor.submit(_process_repo, repo, token) for repo in repos}
         for future in as_completed(future_to_f_detail):
             print(f"Entering the for loop for {counter + 1} time")
             counter += 1
@@ -73,7 +73,7 @@ def collect_data_gen(user_name: str, token: str):
                 yield processed_count, left_count, lang_stats
 
 
-def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[Dict]):
+def _process_repo(repo: Dict, token: str) -> (RetCode, Optional[Dict]):
     permissions = repo['permissions']
     if permissions['admin'] is True:
         permission_str = 'admin'
@@ -98,7 +98,7 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
     lang_stats = dict()
 
     # main
-    cur_repo_lang_stats = _calc_main(user_name, token, repo)
+    cur_repo_lang_stats = _calc_main(token, repo)
     bytes_mapping = {
         'C': 'C/C++',
         'C++': 'C/C++',
@@ -119,7 +119,7 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
         lang_stats[lang]['bytes'] += code_bytes
 
     # lines
-    lines_stats = _calc_repo_lines(user_name, repo['name'])
+    lines_stats = _calc_repo_lines(repo)
     lines_mapping = {
         'Bourne Shell': 'Shell',
         'Bourne Again Shell': 'Shell',
@@ -129,7 +129,8 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
         'C': 'C/C++',
         'C++': 'C/C++',
         'C/C++ Header': 'C/C++',
-        'JSON': None
+        'JSON': None,
+        'Text': None
     }
     for lang, lines in lines_stats.items():
         if lang in lines_mapping:
@@ -149,14 +150,14 @@ def _process_repo(repo: Dict, user_name: str, token: str) -> (RetCode, Optional[
     return RetCode.OK, lang_stats
 
 
-def _calc_main(user_name: str, token: str, repo: Dict) -> Dict:
+def _calc_main(token: str, repo: Dict) -> Dict:
     if token.startswith('github'):
         from git_stats_plate_gen.core.github import get_repo_langs
     else:
         # from git_stats_plate_gen.core.gitlab import get_repo_langs
         return dict()
 
-    repo_langs = get_repo_langs(user_name, token, repo['name'])
+    repo_langs = get_repo_langs(token, repo)
     if config.is_debug:
         pprint.pprint(repo_langs)
 
@@ -173,9 +174,9 @@ def _calc_main(user_name: str, token: str, repo: Dict) -> Dict:
     return lang_stats
 
 
-def _calc_repo_lines(user_name: str, repo_name: str) -> Dict:
+def _calc_repo_lines(repo: Dict) -> Dict:
     with tempfile.TemporaryDirectory() as tmp_dir:
-        repo_dir = clone_repo(user_name, repo_name, tmp_dir)
+        repo_dir = clone_repo(repo, tmp_dir)
         if repo_dir:
             return calc_lines_local_repo(repo_dir)
 

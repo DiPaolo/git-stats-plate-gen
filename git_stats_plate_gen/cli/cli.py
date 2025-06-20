@@ -21,8 +21,8 @@ from git_stats_plate_gen.gui.preview_widget import PreviewWidget
               help='GitHub username')
 @click.option('-t', '--token', metavar='<token>',
               default=None,
-              help="GitHub token (just google 'GitHub Creating a personal access token'); you need only to grant "
-                   "access to Repository permissions: Read access to code, commit statuses, and metadata")
+              help="GitHub access token (just google 'Creating a personal access token (classic)'); the following "
+                   "permissions are required: read:org, repo")
 @click.option('-o', '--output', 'output_base_name', metavar='<filename>',
               default=config.defaults.out_image_base_name, show_default=True,
               help='Output image filename where the graph will be written')

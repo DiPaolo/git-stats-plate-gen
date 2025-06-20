@@ -1,6 +1,5 @@
 import datetime
 import enum
-import getpass
 import os.path
 import uuid
 from dataclasses import dataclass
@@ -72,12 +71,10 @@ class MainDialog(QDialog):
 
         self.ui.token_help.setText(
             "To get your private token, please follow instructions at <br>"
-            "<a href='https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens'>https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens</a>"
-            "<p>You need to grant the following permissions:"
-            "<ul>"
-            "  <li>Contents - Access: Read-only</li>"
-            "  <li>Metadata - Access: Read-only</li>"
-            "</ul>"
+            "<a href='https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/"
+            "managing-your-personal-access-tokens#creating-a-personal-access-token-classic'>"
+            "Creating a personal access token (classic)</a>"
+            "<p>You need to grant the following permissions: read:org, repo"
         )
 
         #
@@ -88,7 +85,7 @@ class MainDialog(QDialog):
         # self.ui.show_log_window.toggled.connect(lambda checked: self.log_window.setVisible(checked))
         # self.ui.show_log_window.setChecked(True)
 
-        self.ui.username.textChanged.connect(lambda text: settings.set_settings_str_value(SettingsKey.USERNAME, text))
+        # self.ui.username.textChanged.connect(lambda text: settings.set_settings_str_value(SettingsKey.USERNAME, text))
 
         self.ui.show_token_help.toggled.connect(lambda checked: self.ui.token_help.setVisible(checked))
 
@@ -99,7 +96,7 @@ class MainDialog(QDialog):
         self.ui.splitter.splitterMoved.connect(lambda x: self._replot_graph())
 
         [elem.textChanged.connect(self._update_start_stop_status) for elem in [
-            self.ui.username, self.ui.token
+            self.ui.token
         ]]
 
         self.ui.min_percent.valueChanged.connect(self._replot_graph)
@@ -164,8 +161,8 @@ class MainDialog(QDialog):
         # left part
         #
 
-        username = settings.get_settings_str_value(SettingsKey.USERNAME, getpass.getuser())
-        self.ui.username.setText(username)
+        # username = settings.get_settings_str_value(SettingsKey.USERNAME, getpass.getuser())
+        # self.ui.username.setText(username)
 
         #
         # right part
@@ -193,13 +190,13 @@ class MainDialog(QDialog):
 
         self.ui.copyright.setText(
             f"<p style='color:gray;'>"
-            f"Copyright 2023-2024 {__version__.__author__} "
+            f"Copyright 2023-2025 {__version__.__author__} "
             f"(<a href='mailto:{__version__.__author_email__}'>{__version__.__author_email__}</a>)"
             f"</p>"
         )
 
     def _update_start_stop_status(self):
-        elems = [self.ui.username, self.ui.token]
+        elems = [self.ui.token]
         filled_elem_count = list(filter(lambda elem: len(elem.text()) > 0, elems))
         self.ui.start_stop.setEnabled(len(filled_elem_count) == len(elems))
 
@@ -294,7 +291,7 @@ class MainDialog(QDialog):
         self.ui.start_stop.clicked.connect(self._cancel_collect)
 
         self._thread = QThread()
-        self._worker = ThreadWorker(self.ui.username.text(), self.ui.token.text())
+        self._worker = ThreadWorker(self.ui.token.text())
         self._worker.moveToThread(self._thread)
         self._worker.started.connect(self.started)
         self._worker.finished.connect(self._stop_collect)
@@ -358,7 +355,7 @@ class MainDialog(QDialog):
 
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [
-            self.ui.username, self.ui.token, self.ui.image_filename_template, self.ui.choose_out_image_dir
+            self.ui.token, self.ui.image_filename_template, self.ui.choose_out_image_dir
         ]]
 
         self._update_save_image_related_controls()

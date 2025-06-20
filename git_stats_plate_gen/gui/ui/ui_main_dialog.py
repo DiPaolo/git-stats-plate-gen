@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_dialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.5.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -37,25 +37,6 @@ class Ui_Dialog(object):
         self.verticalLayout = QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.label = QLabel(self.layoutWidget)
-        self.label.setObjectName(u"label")
-
-        self.horizontalLayout.addWidget(self.label)
-
-        self.username = QLineEdit(self.layoutWidget)
-        self.username.setObjectName(u"username")
-
-        self.horizontalLayout.addWidget(self.username)
-
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_3)
-
-
-        self.verticalLayout.addLayout(self.horizontalLayout)
-
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.label_2 = QLabel(self.layoutWidget)
@@ -258,8 +239,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
-        self.label.setText(QCoreApplication.translate("Dialog", u"GitHub User Name:", None))
-        self.label_2.setText(QCoreApplication.translate("Dialog", u"Token:", None))
+        self.label_2.setText(QCoreApplication.translate("Dialog", u"GitHub User Token:", None))
         self.show_token_help.setText("")
         self.token_help.setText(QCoreApplication.translate("Dialog", u"<will be set programmatically>", None))
         self.stats_status.setText(QCoreApplication.translate("Dialog", u"<statistics status>", None))
