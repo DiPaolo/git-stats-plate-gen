@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from typing import Optional, Dict, Tuple, List
 
 from PySide6 import QtCore
-from PySide6.QtCore import Slot, Signal, QTimer, QThread, QStandardPaths
-from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox, QStyle
+from PySide6.QtCore import Slot, Signal, QTimer, QThread, QStandardPaths, Qt
+from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox, QStyle, QTreeWidgetItem
 
 from git_stats_plate_gen import __version__
 from git_stats_plate_gen.config import config
@@ -95,6 +95,8 @@ class MainDialog(QDialog):
 
         self.ui.splitter.splitterMoved.connect(lambda x: self._replot_graph())
 
+        self.ui.repo_list.itemChanged.connect(self._on_repo_list_item_clicked)
+
         [elem.textChanged.connect(self._update_start_stop_status) for elem in [
             self.ui.token
         ]]
@@ -150,9 +152,57 @@ class MainDialog(QDialog):
         self._replot_graph()
         event.accept()
 
+    def add_repo_info(self, repo_info: Dict):
+        if repo_info is None:
+            return
+
+        new_item = QTreeWidgetItem(
+            [str(self.ui.repo_list.topLevelItemCount() + 1), '', repo_info['name'], str(repo_info['loc']),
+             repo_info['top_language'], repo_info['visibility']])
+
+        new_item.setCheckState(1, Qt.Checked)
+        new_item.setCheckState(6, Qt.Checked if repo_info['is_mine'] else Qt.Unchecked)
+        new_item.setCheckState(7, Qt.Checked if repo_info['is_fork'] else Qt.Unchecked)
+
+        new_item.setData(0, QtCore.Qt.UserRole, repo_info)
+
+        self.ui.repo_list.addTopLevelItem(new_item)
+
+        self.ui.repo_list.resizeColumnToContents(0)
+        self.ui.repo_list.resizeColumnToContents(1)
+        self.ui.repo_list.resizeColumnToContents(2)
+        self.ui.repo_list.resizeColumnToContents(3)
+        self.ui.repo_list.resizeColumnToContents(4)
+        self.ui.repo_list.resizeColumnToContents(5)
+        self.ui.repo_list.resizeColumnToContents(6)
+        self.ui.repo_list.resizeColumnToContents(7)
+
     def _set_stats(self, stats_datetime_utc: Optional[datetime.datetime], stats: Optional[Dict]):
         self._stats = stats
         self._stats_datetime_utc = stats_datetime_utc
+
+        self._stats_changed.emit()
+
+    def _recalculate_stats(self):
+        new_stats = dict()
+        for i in range(self.ui.repo_list.topLevelItemCount()):
+            item = self.ui.repo_list.topLevelItem(i)
+            if item.checkState(1) != Qt.CheckState.Checked:
+                continue
+
+            repo_info = item.data(0, QtCore.Qt.UserRole)
+            if not isinstance(repo_info, dict):
+                continue
+
+            for lang, data in repo_info['lang_stats'].items():
+                if lang not in new_stats:
+                    new_stats[lang] = dict()
+                    new_stats[lang]['lines'] = 0
+
+                loc = data['lines']
+                new_stats[lang]['lines'] += loc
+
+        self._stats = new_stats
 
         self._stats_changed.emit()
 
@@ -298,6 +348,7 @@ class MainDialog(QDialog):
 
         self._thread.started.connect(self._worker.run)
         self._worker.progress.connect(self.ui.progress_bar.setValue)
+        self._worker.repo_processed.connect(lambda r: self.add_repo_info(r))
 
         self._thread.start()
 
@@ -353,6 +404,17 @@ class MainDialog(QDialog):
     def _is_collecting(self) -> bool:
         return self._thread is not None and self._thread.isRunning()
 
+    @Slot()
+    def _on_repo_list_item_clicked(self, item: QTreeWidgetItem, column: int):
+        if item is None:
+            return
+
+        repo_info = item.data(0, QtCore.Qt.UserRole)
+        if not isinstance(repo_info, dict):
+            return
+
+        self._recalculate_stats()
+
     def _set_all_controls_enabled(self, enabled: bool = True):
         [elem.setEnabled(enabled) for elem in [
             self.ui.token, self.ui.image_filename_template, self.ui.choose_out_image_dir
@@ -394,8 +456,8 @@ class MainDialog(QDialog):
         sorted_lang_stats_lines = sorted(lang_stats_lines, key=lambda x: x[1], reverse=True)
 
         text = f'{self._worker.processed} / {self._worker.total} repos\n'
-        text += '\n'
-        text += '\n'.join([f'{v[0]}: {v[1]} LOC' for v in sorted_lang_stats_lines])
+        # text += '\n'
+        # text += '\n'.join([f'{v[0]}: {v[1]} LOC' for v in sorted_lang_stats_lines])
 
         self.ui.debug.setText(text)
 

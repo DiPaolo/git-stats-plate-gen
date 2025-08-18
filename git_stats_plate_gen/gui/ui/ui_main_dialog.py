@@ -16,9 +16,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QDialog, QDoubleSpinBox, QGridLayout,
-    QHBoxLayout, QLabel, QLineEdit, QProgressBar,
-    QPushButton, QSizePolicy, QSpacerItem, QSplitter,
-    QToolButton, QVBoxLayout, QWidget)
+    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+    QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
+    QSplitter, QTabWidget, QTableWidget, QTableWidgetItem,
+    QToolButton, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
+    QWidget)
 
 from git_stats_plate_gen.gui.preview_widget import PreviewWidget
 
@@ -26,9 +28,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(784, 473)
-        self.gridLayout_2 = QGridLayout(Dialog)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        Dialog.resize(1022, 608)
+        self.gridLayout_4 = QGridLayout(Dialog)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.splitter = QSplitter(Dialog)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
@@ -108,9 +110,18 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addWidget(self.debug)
 
-        self.verticalSpacer = QSpacerItem(20, 45, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.repo_list = QTreeWidget(self.layoutWidget)
+        __qtreewidgetitem = QTreeWidgetItem()
+        __qtreewidgetitem.setTextAlignment(7, Qt.AlignCenter);
+        __qtreewidgetitem.setTextAlignment(6, Qt.AlignCenter);
+        __qtreewidgetitem.setTextAlignment(1, Qt.AlignCenter);
+        __qtreewidgetitem.setTextAlignment(0, Qt.AlignCenter);
+        self.repo_list.setHeaderItem(__qtreewidgetitem)
+        self.repo_list.setObjectName(u"repo_list")
+        self.repo_list.setSortingEnabled(True)
+        self.repo_list.header().setProperty("showSortIndicator", True)
 
-        self.verticalLayout.addItem(self.verticalSpacer)
+        self.verticalLayout.addWidget(self.repo_list)
 
         self.splitter.addWidget(self.layoutWidget)
         self.layoutWidget1 = QWidget(self.splitter)
@@ -128,14 +139,68 @@ class Ui_Dialog(object):
 
         self.verticalLayout_2.addWidget(self.preview)
 
+        self.tabWidget = QTabWidget(self.layoutWidget1)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.tab_3 = QWidget()
+        self.tab_3.setObjectName(u"tab_3")
+        self.gridLayout_2 = QGridLayout(self.tab_3)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.label_6 = QLabel(self.tab_3)
+        self.label_6.setObjectName(u"label_6")
+
+        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
+
+        self.label_5 = QLabel(self.tab_3)
+        self.label_5.setObjectName(u"label_5")
+
+        self.gridLayout.addWidget(self.label_5, 2, 0, 1, 1)
+
+        self.output_folder = QLineEdit(self.tab_3)
+        self.output_folder.setObjectName(u"output_folder")
+        self.output_folder.setEnabled(False)
+        self.output_folder.setCursorPosition(0)
+        self.output_folder.setClearButtonEnabled(False)
+
+        self.gridLayout.addWidget(self.output_folder, 0, 1, 1, 1)
+
+        self.full_image_file_path = QLabel(self.tab_3)
+        self.full_image_file_path.setObjectName(u"full_image_file_path")
+
+        self.gridLayout.addWidget(self.full_image_file_path, 2, 1, 1, 2)
+
+        self.label_4 = QLabel(self.tab_3)
+        self.label_4.setObjectName(u"label_4")
+
+        self.gridLayout.addWidget(self.label_4, 0, 0, 1, 1)
+
+        self.choose_out_image_dir = QToolButton(self.tab_3)
+        self.choose_out_image_dir.setObjectName(u"choose_out_image_dir")
+
+        self.gridLayout.addWidget(self.choose_out_image_dir, 0, 2, 1, 1)
+
+        self.image_filename_template = QLineEdit(self.tab_3)
+        self.image_filename_template.setObjectName(u"image_filename_template")
+
+        self.gridLayout.addWidget(self.image_filename_template, 1, 1, 1, 1)
+
+        self.save_image = QPushButton(self.tab_3)
+        self.save_image.setObjectName(u"save_image")
+
+        self.gridLayout.addWidget(self.save_image, 1, 2, 1, 1)
+
+
+        self.gridLayout_2.addLayout(self.gridLayout, 1, 0, 1, 1)
+
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.label_3 = QLabel(self.layoutWidget1)
+        self.label_3 = QLabel(self.tab_3)
         self.label_3.setObjectName(u"label_3")
 
         self.horizontalLayout_5.addWidget(self.label_3)
 
-        self.min_percent = QDoubleSpinBox(self.layoutWidget1)
+        self.min_percent = QDoubleSpinBox(self.tab_3)
         self.min_percent.setObjectName(u"min_percent")
 
         self.horizontalLayout_5.addWidget(self.min_percent)
@@ -145,59 +210,41 @@ class Ui_Dialog(object):
         self.horizontalLayout_5.addItem(self.horizontalSpacer_2)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_5)
+        self.gridLayout_2.addLayout(self.horizontalLayout_5, 0, 0, 1, 1)
 
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.label_6 = QLabel(self.layoutWidget1)
-        self.label_6.setObjectName(u"label_6")
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
+        self.gridLayout_2.addItem(self.verticalSpacer_3, 2, 0, 1, 1)
 
-        self.label_5 = QLabel(self.layoutWidget1)
-        self.label_5.setObjectName(u"label_5")
+        self.tabWidget.addTab(self.tab_3, "")
+        self.tab_4 = QWidget()
+        self.tab_4.setObjectName(u"tab_4")
+        self.gridLayout_3 = QGridLayout(self.tab_4)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.tableWidget_2 = QTableWidget(self.tab_4)
+        self.tableWidget_2.setObjectName(u"tableWidget_2")
 
-        self.gridLayout.addWidget(self.label_5, 2, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.tableWidget_2, 0, 0, 1, 1)
 
-        self.output_folder = QLineEdit(self.layoutWidget1)
-        self.output_folder.setObjectName(u"output_folder")
-        self.output_folder.setEnabled(False)
-        self.output_folder.setCursorPosition(0)
-        self.output_folder.setClearButtonEnabled(False)
+        self.tabWidget.addTab(self.tab_4, "")
 
-        self.gridLayout.addWidget(self.output_folder, 0, 1, 1, 1)
+        self.verticalLayout_2.addWidget(self.tabWidget)
 
-        self.full_image_file_path = QLabel(self.layoutWidget1)
-        self.full_image_file_path.setObjectName(u"full_image_file_path")
-
-        self.gridLayout.addWidget(self.full_image_file_path, 2, 1, 1, 2)
-
-        self.label_4 = QLabel(self.layoutWidget1)
-        self.label_4.setObjectName(u"label_4")
-
-        self.gridLayout.addWidget(self.label_4, 0, 0, 1, 1)
-
-        self.choose_out_image_dir = QToolButton(self.layoutWidget1)
-        self.choose_out_image_dir.setObjectName(u"choose_out_image_dir")
-
-        self.gridLayout.addWidget(self.choose_out_image_dir, 0, 2, 1, 1)
-
-        self.image_filename_template = QLineEdit(self.layoutWidget1)
-        self.image_filename_template.setObjectName(u"image_filename_template")
-
-        self.gridLayout.addWidget(self.image_filename_template, 1, 1, 1, 1)
-
-        self.save_image = QPushButton(self.layoutWidget1)
-        self.save_image.setObjectName(u"save_image")
-
-        self.gridLayout.addWidget(self.save_image, 1, 2, 1, 1)
-
-
-        self.verticalLayout_2.addLayout(self.gridLayout)
-
+        self.verticalLayout_2.setStretch(0, 3)
+        self.verticalLayout_2.setStretch(1, 1)
         self.splitter.addWidget(self.layoutWidget1)
 
-        self.gridLayout_2.addWidget(self.splitter, 0, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.splitter, 0, 0, 1, 1)
+
+        self.user_message = QLabel(Dialog)
+        self.user_message.setObjectName(u"user_message")
+        self.user_message.setTextFormat(Qt.RichText)
+
+        self.gridLayout_4.addWidget(self.user_message, 1, 0, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.gridLayout_4.addItem(self.verticalSpacer_2, 2, 0, 1, 1)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -218,21 +265,14 @@ class Ui_Dialog(object):
         self.horizontalLayout_3.addWidget(self.copyright)
 
 
-        self.gridLayout_2.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
+        self.gridLayout_4.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
 
-        self.user_message = QLabel(Dialog)
-        self.user_message.setObjectName(u"user_message")
-        self.user_message.setTextFormat(Qt.RichText)
-
-        self.gridLayout_2.addWidget(self.user_message, 1, 0, 1, 1)
-
-        self.verticalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed)
-
-        self.gridLayout_2.addItem(self.verticalSpacer_2, 2, 0, 1, 1)
-
-        self.gridLayout_2.setRowStretch(0, 1)
+        self.gridLayout_4.setRowStretch(0, 1)
 
         self.retranslateUi(Dialog)
+
+        self.tabWidget.setCurrentIndex(0)
+
 
         QMetaObject.connectSlotsByName(Dialog)
     # setupUi
@@ -246,7 +286,15 @@ class Ui_Dialog(object):
         self.start_stop.setText(QCoreApplication.translate("Dialog", u"Collect Statistics", None))
         self.progress_bar.setFormat(QCoreApplication.translate("Dialog", u"%v/%m (%p%)", None))
         self.debug.setText("")
-        self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent to be Shown:", None))
+        ___qtreewidgetitem = self.repo_list.headerItem()
+        ___qtreewidgetitem.setText(7, QCoreApplication.translate("Dialog", u"Fork", None));
+        ___qtreewidgetitem.setText(6, QCoreApplication.translate("Dialog", u"Owner", None));
+        ___qtreewidgetitem.setText(5, QCoreApplication.translate("Dialog", u"Visibility", None));
+        ___qtreewidgetitem.setText(4, QCoreApplication.translate("Dialog", u"Top Language", None));
+        ___qtreewidgetitem.setText(3, QCoreApplication.translate("Dialog", u"LOC", None));
+        ___qtreewidgetitem.setText(2, QCoreApplication.translate("Dialog", u"Name", None));
+        ___qtreewidgetitem.setText(1, QCoreApplication.translate("Dialog", u"Use", None));
+        ___qtreewidgetitem.setText(0, QCoreApplication.translate("Dialog", u"#", None));
         self.label_6.setText(QCoreApplication.translate("Dialog", u"Filename Template:", None))
         self.label_5.setText(QCoreApplication.translate("Dialog", u"Full Filename:", None))
         self.output_folder.setInputMask("")
@@ -256,8 +304,11 @@ class Ui_Dialog(object):
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Output Folder:", None))
         self.choose_out_image_dir.setText(QCoreApplication.translate("Dialog", u"...", None))
         self.save_image.setText(QCoreApplication.translate("Dialog", u"Save", None))
+        self.label_3.setText(QCoreApplication.translate("Dialog", u"Min Percent to be Shown:", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("Dialog", u"Tab 1", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), QCoreApplication.translate("Dialog", u"Tab 2", None))
+        self.user_message.setText("")
         self.program_name_n_version.setText(QCoreApplication.translate("Dialog", u"<program name & version>", None))
         self.copyright.setText(QCoreApplication.translate("Dialog", u"<copyright>", None))
-        self.user_message.setText("")
     # retranslateUi
 
