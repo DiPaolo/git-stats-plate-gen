@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
-    <height>473</height>
+    <width>1022</width>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0,0,0">
+  <layout class="QGridLayout" name="gridLayout_4" rowstretch="1,0,0,0">
    <item row="0" column="0">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
@@ -140,25 +140,71 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="tableWidget"/>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+        <widget class="QTreeWidget" name="repo_list">
+         <property name="sortingEnabled">
+          <bool>true</bool>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>45</height>
-          </size>
-         </property>
-        </spacer>
+         <attribute name="headerShowSortIndicator" stdset="0">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>#</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Use</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>LOC</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Top Language</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Visibility</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Owner</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Fork</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,1">
        <item>
         <widget class="PreviewWidget" name="preview" native="true">
          <property name="sizePolicy">
@@ -170,106 +216,169 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Min Percent to be Shown:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDoubleSpinBox" name="min_percent"/>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Filename Template:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Full Filename:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="output_folder">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="inputMask">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="cursorPosition">
-            <number>0</number>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QLabel" name="full_image_file_path">
-           <property name="text">
-            <string>&lt;full tilename&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Output Folder:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QToolButton" name="choose_out_image_dir">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="image_filename_template"/>
-         </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="save_image">
-           <property name="text">
-            <string>Save</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_3">
+          <attribute name="title">
+           <string>Tab 1</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="1" column="0">
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Filename Template:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Full Filename:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="output_folder">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="inputMask">
+                <string/>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="cursorPosition">
+                <number>0</number>
+               </property>
+               <property name="placeholderText">
+                <string/>
+               </property>
+               <property name="clearButtonEnabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" colspan="2">
+              <widget class="QLabel" name="full_image_file_path">
+               <property name="text">
+                <string>&lt;full tilename&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Output Folder:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QToolButton" name="choose_out_image_dir">
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="image_filename_template"/>
+             </item>
+             <item row="1" column="2">
+              <widget class="QPushButton" name="save_image">
+               <property name="text">
+                <string>Save</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Min Percent to be Shown:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="min_percent"/>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_4">
+          <attribute name="title">
+           <string>Tab 2</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="tableWidget_2"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>
     </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="user_message">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -307,32 +416,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="user_message">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::RichText</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

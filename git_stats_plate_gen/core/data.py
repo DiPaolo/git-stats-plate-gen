@@ -29,14 +29,14 @@ def collect_data_gen(token: str):
         from git_stats_plate_gen.core.github import get_repos
         repos = get_repos(token)
     else:
-        yield 0, 0, None
+        yield 0, 0, None, None
         # from git_stats_plate_gen.core.gitlab import get_repo_langs, get_repos
 
     if config.is_debug:
         print(f'Total {len(repos)} repos')
 
     if len(repos) == 0:
-        yield 0, 0, None
+        yield 0, 0, None, None
 
     lang_stats = dict()
     processed_count = 0
@@ -46,12 +46,12 @@ def collect_data_gen(token: str):
     counter = 0
 
     with ThreadPoolExecutor(max_workers=20) as executor:
-        future_to_f_detail = {executor.submit(_process_repo, repo, token) for repo in repos}
+        future_to_f_detail = {executor.submit(_process_repo, repo, token) for repo in repos[:left_count]}
         for future in as_completed(future_to_f_detail):
             print(f"Entering the for loop for {counter + 1} time")
             counter += 1
             try:
-                ret_code, cur_repo_lang_stats = future.result()
+                ret_code, cur_repo_lang_stats, repo_info = future.result()
             except Exception as exc:
                 print(f"Processing repo generated and exception: {exc}")
             else:
@@ -70,7 +70,7 @@ def collect_data_gen(token: str):
                 processed_count += 1
                 left_count -= 1
 
-                yield processed_count, left_count, lang_stats
+                yield processed_count, left_count, lang_stats, repo_info
 
 
 def _process_repo(repo: Dict, token: str) -> (RetCode, Optional[Dict]):
@@ -90,10 +90,10 @@ def _process_repo(repo: Dict, token: str) -> (RetCode, Optional[Dict]):
               f"{repo['language']}")
 
     if is_fork:
-        return RetCode.IS_FORK, None
+        return RetCode.IS_FORK, None, None
 
     if repo['language'] is None:
-        return RetCode.IS_EMPTY, None
+        return RetCode.IS_EMPTY, None, None
 
     lang_stats = dict()
 
@@ -147,7 +147,15 @@ def _process_repo(repo: Dict, token: str) -> (RetCode, Optional[Dict]):
 
         lang_stats[lang]['lines'] += lines
 
-    return RetCode.OK, lang_stats
+    return RetCode.OK, lang_stats, {
+        'name': repo['name'],
+        'loc': sum([ls['lines'] for ls in lang_stats.values()]),
+        'top_language': repo['language'],
+        'visibility': 'private' if repo['private'] is True else 'public',
+        'is_mine': repo['owner']['login'] == 'DiPaolo',
+        'is_fork': is_fork,
+        'lang_stats': lang_stats
+    }
 
 
 def _calc_main(token: str, repo: Dict) -> Dict:

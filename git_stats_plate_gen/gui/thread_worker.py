@@ -14,6 +14,7 @@ class ThreadWorker(QObject):
     started = Signal()
     finished = Signal(bool)
     progress = Signal(float)
+    repo_processed = Signal(object)
 
     _cur_stats = None
     _cancel_requested = False
@@ -57,7 +58,9 @@ class ThreadWorker(QObject):
 
         gen = collect_data_gen(self._token)
         while not self._cancel_requested:
-            self._processed, self._left, self._cur_stats = next(gen)
+            self._processed, self._left, self._cur_stats, repo_info = next(gen)
+
+            self.repo_processed.emit(repo_info)
 
             # use local to reduce the potential risk of race conditions
             processed = self._processed

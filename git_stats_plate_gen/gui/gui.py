@@ -5,7 +5,6 @@ from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import QApplication
 
 from git_stats_plate_gen.config import config
-# from git_stats_plate_gen.app import init_app, deinit_app
 from git_stats_plate_gen.gui.main_dialog import MainDialog
 
 
