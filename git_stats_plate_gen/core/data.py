@@ -149,7 +149,7 @@ def _process_repo(repo: Dict, token: str) -> (RetCode, Optional[Dict]):
 
     return RetCode.OK, lang_stats, {
         'name': repo['name'],
-        'loc': sum([l['lines'] for l in lang_stats.values()]),
+        'loc': sum([ls['lines'] for ls in lang_stats.values()]),
         'top_language': repo['language'],
         'visibility': 'private' if repo['private'] is True else 'public',
         'is_mine': repo['owner']['login'] == 'DiPaolo',

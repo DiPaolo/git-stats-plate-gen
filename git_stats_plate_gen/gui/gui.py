@@ -1,11 +1,10 @@
 import logging
 import sys
 
-from PySide6.QtCore import QCoreApplication, QMetaType
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import QApplication
 
 from git_stats_plate_gen.config import config
-from git_stats_plate_gen.core.repo_info import RepoInfo
 from git_stats_plate_gen.gui.main_dialog import MainDialog
 
 

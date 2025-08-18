@@ -1,6 +1,5 @@
 import copy
 import logging
-import random
 from typing import Dict
 
 from PySide6.QtCore import QObject, Signal, Slot

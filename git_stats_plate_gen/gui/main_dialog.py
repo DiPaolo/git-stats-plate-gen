@@ -12,7 +12,7 @@ from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox, QStyle, QTreeWi
 from git_stats_plate_gen import __version__
 from git_stats_plate_gen.config import config
 from git_stats_plate_gen.core import cache, utils
-from git_stats_plate_gen.core.common import DataType, get_data_type_name, get_output_image_filename
+from git_stats_plate_gen.core.common import get_output_image_filename
 from git_stats_plate_gen.gui import logger, settings
 from git_stats_plate_gen.gui.log_window import LogWindow
 from git_stats_plate_gen.gui.settings import SettingsKey
@@ -447,18 +447,7 @@ class MainDialog(QDialog):
         if not self._worker:
             return
 
-        cur_stats = self._worker.cur_stats
-
-        param_name = get_data_type_name(DataType.LINES)
-        lang_stats_lines = list(
-            filter(lambda x: x, [(k, v[param_name]) if param_name in v else None for k, v in cur_stats.items()])
-        )
-        sorted_lang_stats_lines = sorted(lang_stats_lines, key=lambda x: x[1], reverse=True)
-
         text = f'{self._worker.processed} / {self._worker.total} repos\n'
-        # text += '\n'
-        # text += '\n'.join([f'{v[0]}: {v[1]} LOC' for v in sorted_lang_stats_lines])
-
         self.ui.debug.setText(text)
 
     @Slot()
