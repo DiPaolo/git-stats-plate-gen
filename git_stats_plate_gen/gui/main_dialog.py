@@ -340,6 +340,8 @@ class MainDialog(QDialog):
         self.ui.start_stop.clicked.disconnect()
         self.ui.start_stop.clicked.connect(self._cancel_collect)
 
+        self.ui.repo_list.clear()
+
         self._thread = QThread()
         self._worker = ThreadWorker(self.ui.token.text())
         self._worker.moveToThread(self._thread)
